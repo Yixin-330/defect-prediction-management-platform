@@ -1,0 +1,9 @@
+Failed to find real location of C:\Users\Lenovo\AppData\Local\Programs\Python\Python314\python.exe
+[13:02:18] [INFO] confirm_ui: running at http://localhost:5050
+[13:02:18] [INFO] confirm_ui: project: D:\»Ìº˛»±œ›≤‚ ‘”Î‘§≤‚\projects\jit_course_report_ppt169_20261009
+[13:02:18] [INFO] confirm_ui: idle timeout: 900s (0 = disabled)
+ * Serving Flask app 'server'
+ * Debug mode: off
+[13:02:18] [INFO] confirm_ui: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5050
+[13:02:18] [INFO] confirm_ui: [33mPress CTRL+C to quit[0m
