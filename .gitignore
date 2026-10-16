@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+
+# 数据库
+*.db
+*.sqlite3
+
+# 克隆的仓库（不要上传别人的代码！）
+cloned_repos/
+
+# 环境变量
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# 操作系统
+.DS_Store
+Thumbs.db
