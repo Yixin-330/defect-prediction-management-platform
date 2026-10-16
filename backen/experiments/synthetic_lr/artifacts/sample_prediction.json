@@ -1,0 +1,30 @@
+{
+  "notice": "SYNTHETIC ONLY: labels are simulated, not SZZ; metrics do not measure real defect prediction.",
+  "feature_schema_version": "synthetic-kamei14-v1",
+  "input": {
+    "project_id": "synthetic-demo",
+    "commit_sha": "43879ae1988aa1509e43b2653a9b4aad7e3f9363",
+    "features": {
+      "ns": 1,
+      "nd": 3,
+      "nf": 7,
+      "entropy": 2.706419327353148,
+      "la": 72,
+      "ld": 40,
+      "lt": 3953,
+      "fix": 0,
+      "ndev": 15,
+      "age": 5.440980393976518,
+      "nuc": 84,
+      "exp": 135,
+      "rexp": 34.30401051112519,
+      "sexp": 17
+    }
+  },
+  "risk_score": 0.29591992287224583,
+  "explanation": {
+    "available": false,
+    "reason": "Not implemented",
+    "contributions": null
+  }
+}
