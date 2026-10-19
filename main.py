@@ -1,14 +1,14 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime
-from database import SessionLocal, engine
-import models
-
-from git_parser import clone_and_parse_repo
+from typing import Optional
 from sqlalchemy import func
 import uuid
-from fastapi import BackgroundTasks
+
+from database import SessionLocal, engine
+import models
+from git_parser import clone_and_parse_repo
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -23,9 +23,11 @@ app.add_middleware(
 )
 
 # 定义“快递单”格式
-class StudentCreate(BaseModel):
+class ProjectCreate(BaseModel):
     name: str
     git_url: str
+    owner: Optional[str] = None
+    description: Optional[str] = None
 
 # 获取数据库连接
 def get_db():
@@ -36,51 +38,51 @@ def get_db():
         db.close()
 
 # 1. 查所有学生
-@app.get("/students/")
-def read_students(db: Session = Depends(get_db)):
-    return db.query(models.Student).all()
+@app.get("/projects/")
+def read_projects(db: Session = Depends(get_db)):
+    return db.query(models.Project).all()
 
 # 2. 新增学生
-@app.post("/students/")
-def create_student(student: StudentCreate, db: Session = Depends(get_db)):
-    db_student = models.Student(name=student.name, git_url=student.git_url)
-    db.add(db_student)
+@app.post("/projects/")
+def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
+    db_project = models.Project(name=project.name, git_url=project.git_url, owner=project.owner,
+        description=project.description)
+    db.add(db_project)
     db.commit()
-    db.refresh(db_student)
-    return db_student
+    db.refresh(db_project)
+    return db_project
 
 # 3. 根据 ID 查单个学生
-@app.get("/students/{student_id}")
-def read_student(student_id: int, db: Session = Depends(get_db)):
-    # filter 相当于 SQL 里的 WHERE id = student_id
-    student = db.query(models.Student).filter(models.Student.id == student_id).first()
-    if student is None:
+@app.get("/projects/{project_id}")
+def read_project(project_id: int, db: Session = Depends(get_db)):
+    # filter 相当于 SQL 里的 WHERE id = sproject_id
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if project is None:
         # 如果没找到，返回 404 错误，前端就知道数据不存在
-        raise HTTPException(status_code=404, detail="学生不存在")
-    return student
+        raise HTTPException(status_code=404, detail="项目不存在")
+    return project
 
-# 4. 根据 ID 修改学生信息
-@app.put("/students/{student_id}")
-def update_student(student_id: int, student: StudentCreate, db: Session = Depends(get_db)):
-    db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
-    if db_student is None:
-        raise HTTPException(status_code=404, detail="学生不存在")
-    
-    # 更新数据库里的字段
-    db_student.name = student.name
-    db_student.git_url = student.git_url
+# 4. 修改项目
+@app.put("/projects/{project_id}")
+def update_project(project_id: int, project: ProjectCreate, db: Session = Depends(get_db)):
+    db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="项目不存在")
+    db_project.name = project.name
+    db_project.git_url = project.git_url
+    db_project.owner = project.owner
+    db_project.description = project.description
     db.commit()
-    db.refresh(db_student)
-    return db_student
+    db.refresh(db_project)
+    return db_project
 
-# 5. 根据 ID 删除学生
-@app.delete("/students/{student_id}")
-def delete_student(student_id: int, db: Session = Depends(get_db)):
-    db_student = db.query(models.Student).filter(models.Student.id == student_id).first()
-    if db_student is None:
-        raise HTTPException(status_code=404, detail="学生不存在")
-    
-    db.delete(db_student)
+# 5. 删除项目
+@app.delete("/projects/{project_id}")
+def delete_project(project_id: int, db: Session = Depends(get_db)):
+    db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="项目不存在")
+    db.delete(db_project)
     db.commit()
     return {"message": "删除成功"}
 
@@ -142,9 +144,12 @@ def read_repo_commits(repo_id: int, db: Session = Depends(get_db)):
     repo = db.query(models.Repository).filter(models.Repository.id == repo_id).first()
     if repo is None:
         raise HTTPException(status_code=404, detail="仓库不存在")
-    
+
+    commits = db.query(models.Commit).filter(
+        models.Commit.repository_id == repo_id
+    ).order_by(models.Commit.date.desc()).all()
+
     # 查询该仓库下的所有提交
-    commits = db.query(models.Commit).filter(models.Commit.repository_id == repo_id).all()
     return {
         "repository": repo.name,
         "total": len(commits),
@@ -229,7 +234,7 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
     total_repos = db.query(models.Repository).count()
     
     # 3. 总学生数（真实数据）
-    total_students = db.query(models.Student).count()
+    total_projects = db.query(models.Project).count()
 
     # 4. 计算高风险数（Mock 规则：暂时把提交信息里包含 "fix" 或 "bug" 的算作高风险）
     # 等 B 同学的模型上线后，这里换成从数据库读预测结果即可
@@ -249,7 +254,7 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
     return {
         "total_commits": total_commits,
         "total_repos": total_repos,
-        "total_students": total_students,
+        "total_projects": total_projects,
         "high_risk_commits": high_risk_commits,
         "abnormal_commits": abnormal_commits,
         "recent_commits": recent_commits,
@@ -260,3 +265,193 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
             {"date": "2023-11-09", "risk_count": 5}
         ]
     }
+
+# ========== 预测结果接口 ==========
+class PredictionResponse(BaseModel):
+    commit_id: int
+    risk_score: float
+    level: str
+    model_id: str
+    predicted_at: str
+    explanation_available: bool
+
+
+@app.get("/predictions/{commit_id}", response_model=PredictionResponse)
+def get_prediction(commit_id: int, db: Session = Depends(get_db)):
+    commit = db.query(models.Commit).filter(models.Commit.id == commit_id).first()
+    if commit is None:
+        raise HTTPException(status_code=404, detail="提交不存在")
+
+    # 先看数据库里有没有历史预测
+    existing = db.query(models.Prediction).filter(
+        models.Prediction.commit_id == commit_id
+    ).first()
+    if existing:
+        return PredictionResponse(
+            commit_id=existing.commit_id,
+            risk_score=existing.risk_score,
+            level=existing.level,
+            model_id=existing.model_id,
+            predicted_at=existing.predicted_at.isoformat(),
+            explanation_available=bool(existing.explanation_available)
+        )
+
+    # Mock 逻辑：等 B 的模型就绪后替换
+    if "fix" in commit.message.lower() or "bug" in commit.message.lower():
+        risk_score, level = 0.85, "高"
+    elif len(commit.message) < 10:
+        risk_score, level = 0.55, "中"
+    else:
+        risk_score, level = 0.20, "低"
+
+    now = datetime.now()
+    new_pred = models.Prediction(
+        commit_id=commit_id,
+        risk_score=risk_score,
+        level=level,
+        model_id="mock-v0.1",
+        explanation_available=0,
+        predicted_at=now
+    )
+    db.add(new_pred)
+    db.commit()
+    db.refresh(new_pred)
+
+    return PredictionResponse(
+        commit_id=commit_id,
+        risk_score=risk_score,
+        level=level,
+        model_id="mock-v0.1",
+        predicted_at=now.isoformat(),
+        explanation_available=False
+    )
+
+
+# 新增：按项目查询历史预测（任务 4.5）
+@app.get("/projects/{project_id}/predictions")
+def list_project_predictions(project_id: int, db: Session = Depends(get_db)):
+    # 找到该项目下的仓库
+    repos = db.query(models.Repository).all()  # 简化版：拿所有仓库
+    # 更精确的做法是 Project 关联 Repository，后期补上
+    predictions = db.query(models.Prediction).join(
+        models.Commit, models.Prediction.commit_id == models.Commit.id
+    ).order_by(models.Prediction.risk_score.desc()).all()
+
+    return {
+        "total": len(predictions),
+        "predictions": predictions
+    }
+
+
+# 新增：优先级排序接口（任务 4.6）
+@app.get("/projects/{project_id}/risk-ranking")
+def risk_ranking(project_id: int, db: Session = Depends(get_db)):
+    # 简化版：全库预测按风险降序
+    predictions = db.query(models.Prediction).join(
+        models.Commit, models.Prediction.commit_id == models.Commit.id
+    ).order_by(models.Prediction.risk_score.desc()).all()
+
+    return {
+        "total": len(predictions),
+        "items": [
+            {
+                "commit_id": p.commit_id,
+                "risk_score": p.risk_score,
+                "level": p.level,
+                "commit_hash": db.query(models.Commit).get(p.commit_id).hash
+            }
+            for p in predictions
+        ]
+    }
+
+# ========== 审查状态机 ==========
+class ReviewCreate(BaseModel):
+    commit_id: int
+    handler: str
+    note: Optional[str] = None
+
+class ReviewUpdate(BaseModel):
+    status: str          # 只能是"处理中"、"已处理"、"已忽略"之一
+    handler: Optional[str] = None
+    note: Optional[str] = None
+
+# 允许的状态流转规则（D5）
+ALLOWED_TRANSITIONS = {
+    "待审查": ["处理中", "已忽略"],
+    "处理中": ["已处理", "已忽略"],
+    "已处理": [],   # 终态，不允许再变
+    "已忽略": []    # 终态，不允许再变
+}
+
+@app.post("/reviews/")
+def create_review(review: ReviewCreate, db: Session = Depends(get_db)):
+    commit = db.query(models.Commit).filter(models.Commit.id == review.commit_id).first()
+    if commit is None:
+        raise HTTPException(status_code=404, detail="提交不存在")
+
+    # 必须有预测结果才能创建审查（任务 5.1）
+    prediction = db.query(models.Prediction).filter(
+        models.Prediction.commit_id == review.commit_id
+    ).first()
+    if prediction is None:
+        raise HTTPException(status_code=400, detail="该提交尚无预测结果，请先调用 /predictions/{commit_id} 生成预测")
+
+    # 同一提交不能重复创建
+    existing = db.query(models.Review).filter(models.Review.commit_id == review.commit_id).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="该提交已存在审查记录，不能重复创建")
+
+    now = datetime.now()
+    new_review = models.Review(
+        commit_id=review.commit_id,
+        status="待审查",
+        handler=review.handler,
+        note=review.note,
+        risk_score_at_creation=prediction.risk_score,   # ← 任务 5.5
+        created_at=now,
+        updated_at=now
+    )
+    db.add(new_review)
+    db.commit()
+    db.refresh(new_review)
+    return new_review
+
+@app.get("/reviews/")
+def list_reviews(status: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(models.Review)
+    if status:
+        query = query.filter(models.Review.status == status)
+    return query.all()
+
+@app.put("/reviews/{review_id}")
+def update_review(review_id: int, review: ReviewUpdate, db: Session = Depends(get_db)):
+    db_review = db.query(models.Review).filter(models.Review.id == review_id).first()
+    if db_review is None:
+        raise HTTPException(status_code=404, detail="审查记录不存在")
+
+    # 校验状态流转是否合法
+    allowed = ALLOWED_TRANSITIONS.get(db_review.status, [])
+    if review.status not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail=f"非法状态流转：'{db_review.status}' 不能变为 '{review.status}'。允许的流转：{allowed}"
+        )
+
+    db_review.status = review.status
+    if review.handler is not None:
+        db_review.handler = review.handler
+    if review.note is not None:
+        db_review.note = review.note
+    db_review.updated_at = datetime.now()
+    db.commit()
+    db.refresh(db_review)
+    return db_review
+
+@app.delete("/reviews/{review_id}")
+def delete_review(review_id: int, db: Session = Depends(get_db)):
+    db_review = db.query(models.Review).filter(models.Review.id == review_id).first()
+    if db_review is None:
+        raise HTTPException(status_code=404, detail="审查记录不存在")
+    db.delete(db_review)
+    db.commit()
+    return {"message": "删除成功"}
