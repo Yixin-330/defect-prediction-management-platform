@@ -1,0 +1,9 @@
+# 东南亚跨境电商AI选品系统 — 后端依赖
+# 注意: 使用 --prefer-binary 避免编译
+fastapi>=0.100.0
+uvicorn[standard]>=0.24.0
+httpx>=0.25.0
+python-dotenv>=1.0.0
+sse-starlette>=2.0.0
+# pydantic is a dependency of fastapi — will be auto-installed
+# anthropic - 可选，有 API Key 时安装

@@ -1,0 +1,55 @@
+{
+  "notice": "SYNTHETIC ONLY: labels are simulated, not SZZ; metrics do not measure real defect prediction.",
+  "model_id": "synthetic-logistic-regression",
+  "model_version": "demo-v1",
+  "feature_schema_version": "synthetic-kamei14-v1",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "sample_count": 2000,
+  "dataset_sha256": "9df60d8b1da02f8f59aa08c4ce028f707769394702b3fc43cc877a3f9cebac62",
+  "model_sha256": "bc00ce180e3136788d86fa214d7e0ad833c4e9bedd879e197cfbd67d4e7c34c6",
+  "split": "chronological 70/15/15; no shuffle",
+  "preprocessing": "StandardScaler fitted on training data only; bundled in model.joblib",
+  "parameters": {
+    "C": 1.0,
+    "class_weight": null,
+    "dual": false,
+    "fit_intercept": true,
+    "intercept_scaling": 1,
+    "l1_ratio": 0.0,
+    "max_iter": 2000,
+    "n_jobs": null,
+    "penalty": "deprecated",
+    "random_state": 42,
+    "solver": "lbfgs",
+    "tol": 0.0001,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "versions": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0"
+  },
+  "priority_thresholds": null,
+  "explanation": {
+    "available": false,
+    "reason": "Not implemented in this experiment"
+  }
+}

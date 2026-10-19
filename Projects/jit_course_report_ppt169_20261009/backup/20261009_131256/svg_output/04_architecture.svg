@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto-start-reverse"><path d="M0,0 L10,4 L0,8" fill="#6D8299"/></marker></defs>
+<rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+<g id="title"><text x="64" y="92" font-family="Microsoft YaHei" font-size="40" font-weight="700" fill="#18324F">技术架构：用户使用系统</text></g>
+<g id="modules">
+<text x="64" y="276" font-family="Microsoft YaHei" font-size="28" font-weight="700" fill="#18324F">用户</text>
+<rect x="220" y="204" width="250" height="154" fill="#F3F6FA" stroke="#D4DEE8" stroke-width="1"/>
+<text x="242" y="246" font-family="Microsoft YaHei" font-size="28" font-weight="700" fill="#18324F">前端页面</text><text x="242" y="293" font-family="Microsoft YaHei" font-size="24" fill="#263444">风险列表、提交详情</text><text x="242" y="328" font-family="Microsoft YaHei" font-size="24" fill="#263444">审查记录、趋势看板</text>
+<rect x="600" y="204" width="270" height="154" fill="#F3F6FA" stroke="#D4DEE8" stroke-width="1"/>
+<text x="622" y="246" font-family="Microsoft YaHei" font-size="28" font-weight="700" fill="#18324F">后端服务</text><text x="622" y="293" font-family="Microsoft YaHei" font-size="24" fill="#263444">仓库接入、请求管理</text><text x="622" y="328" font-family="Microsoft YaHei" font-size="24" fill="#263444">预测调用、结果管理</text>
+<rect x="996" y="204" width="220" height="154" fill="#F3F6FA" stroke="#D4DEE8" stroke-width="1"/>
+<text x="1018" y="246" font-family="Microsoft YaHei" font-size="28" font-weight="700" fill="#18324F">数据处理</text><text x="1018" y="293" font-family="Microsoft YaHei" font-size="24" fill="#263444">提交解析</text><text x="1018" y="328" font-family="Microsoft YaHei" font-size="24" fill="#263444">特征提取</text>
+<rect x="600" y="462" width="270" height="154" fill="#F3F6FA" stroke="#D4DEE8" stroke-width="1"/>
+<text x="622" y="504" font-family="Microsoft YaHei" font-size="28" font-weight="700" fill="#18324F">数据存储</text><text x="622" y="551" font-family="Microsoft YaHei" font-size="24" fill="#263444">项目与提交、特征</text><text x="622" y="586" font-family="Microsoft YaHei" font-size="24" fill="#263444">预测结果、处理记录</text>
+<rect x="996" y="462" width="220" height="154" fill="#F3F6FA" stroke="#D4DEE8" stroke-width="1"/>
+<text x="1018" y="504" font-family="Microsoft YaHei" font-size="28" font-weight="700" fill="#18324F">预测模型</text><text x="1018" y="551" font-family="Microsoft YaHei" font-size="24" fill="#263444">风险评分</text><text x="1018" y="586" font-family="Microsoft YaHei" font-size="24" fill="#263444">特征贡献解释</text>
+</g>
+<g id="relations">
+<line x1="128" y1="280" x2="212" y2="280" stroke="#6D8299" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="486" y="243" font-family="Microsoft YaHei" font-size="20" fill="#617286">发送请求</text><line x1="478" y1="255" x2="592" y2="255" stroke="#6D8299" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="592" y1="301" x2="478" y2="301" stroke="#6D8299" stroke-width="2" marker-end="url(#arrow)"/><text x="486" y="337" font-family="Microsoft YaHei" font-size="20" fill="#617286">返回结果</text>
+<text x="888" y="243" font-family="Microsoft YaHei" font-size="20" fill="#617286">调用处理</text><line x1="878" y1="255" x2="988" y2="255" stroke="#6D8299" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="735" y1="366" x2="735" y2="454" stroke="#6D8299" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/><text x="600" y="401" font-family="Microsoft YaHei" font-size="20" fill="#617286">读取数据</text><text x="600" y="432" font-family="Microsoft YaHei" font-size="20" fill="#617286">保存结果</text>
+<line x1="1106" y1="366" x2="1106" y2="454" stroke="#6D8299" stroke-width="2" marker-end="url(#arrow)"/><text x="1124" y="413" font-family="Microsoft YaHei" font-size="20" fill="#617286">特征</text>
+<polyline points="988,539 934,539 934,317 878,317" fill="none" stroke="#6D8299" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="834" y="400" font-family="Microsoft YaHei" font-size="20" fill="#617286">风险分数</text><text x="834" y="431" font-family="Microsoft YaHei" font-size="20" fill="#617286">及解释</text>
+</g>
+<g id="caption"><text x="64" y="664" font-family="Microsoft YaHei" font-size="20" fill="#617286">选择一次提交，后端读取数据并提取特征，调用模型预测，保存结果并返回前端展示。</text><text x="1188" y="684" font-family="Microsoft YaHei" font-size="20" fill="#617286">04</text></g>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+<g id="title"><text x="64" y="92" font-family="Microsoft YaHei" font-size="40" font-weight="700" fill="#18324F">当前问题与应对计划</text></g>
+<g id="native-table">
+<rect x="64" y="170" width="1152" height="52" fill="#F3F6FA"/>
+<text x="82" y="206" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#18324F">当前问题</text><text x="384" y="206" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#18324F">具体表现</text><text x="784" y="206" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#18324F">应对计划</text>
+<text x="82" y="273" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">首个可用版本</text><text x="82" y="309" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">边界不够明确</text>
+<text x="384" y="259" font-family="Microsoft YaHei" font-size="24" fill="#263444">产品主线已明确，首次交付</text><text x="384" y="293" font-family="Microsoft YaHei" font-size="24" fill="#263444">功能与验收标准仍需细化</text>
+<text x="784" y="259" font-family="Microsoft YaHei" font-size="24" fill="#263444">确定首次演示必须跑通的流程，</text><text x="784" y="293" font-family="Microsoft YaHei" font-size="24" fill="#263444">划分优先实现与后续扩展功能</text>
+<line x1="64" y1="330" x2="1216" y2="330" stroke="#D4DEE8" stroke-width="1"/>
+<text x="82" y="387" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">实验工作量较大</text>
+<text x="384" y="367" font-family="Microsoft YaHei" font-size="24" fill="#263444">至少8个模型，涉及两类</text><text x="384" y="401" font-family="Microsoft YaHei" font-size="24" fill="#263444">指标、模型对比与解释</text>
+<text x="784" y="367" font-family="Microsoft YaHei" font-size="24" fill="#263444">先跑通基线模型，统一实验</text><text x="784" y="401" font-family="Microsoft YaHei" font-size="24" fill="#263444">流程，再逐步扩展模型</text>
+<line x1="64" y1="438" x2="1216" y2="438" stroke="#D4DEE8" stroke-width="1"/>
+<text x="82" y="489" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">模块交付约定</text><text x="82" y="525" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">不够具体</text>
+<text x="384" y="475" font-family="Microsoft YaHei" font-size="24" fill="#263444">数据格式、特征顺序、模型</text><text x="384" y="509" font-family="Microsoft YaHei" font-size="24" fill="#263444">文件及接口结构尚需对齐</text>
+<text x="784" y="475" font-family="Microsoft YaHei" font-size="24" fill="#263444">制定输入输出规范，用公共</text><text x="784" y="509" font-family="Microsoft YaHei" font-size="24" fill="#263444">样例数据提前联调</text>
+<line x1="64" y1="546" x2="1216" y2="546" stroke="#D4DEE8" stroke-width="1"/>
+<text x="82" y="597" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">训练数据与目标</text><text x="82" y="633" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">用户存在差异</text>
+<text x="384" y="583" font-family="Microsoft YaHei" font-size="24" fill="#263444">开源项目与高校课程项目的</text><text x="384" y="617" font-family="Microsoft YaHei" font-size="24" fill="#263444">规模、提交习惯存在差异</text>
+<text x="784" y="583" font-family="Microsoft YaHei" font-size="24" fill="#263444">分开开展开源数据评估与课程</text><text x="784" y="617" font-family="Microsoft YaHei" font-size="24" fill="#263444">项目试用，验证适用性</text>
+</g>
+<text x="1188" y="684" font-family="Microsoft YaHei" font-size="20" fill="#617286">07</text>
+</svg>

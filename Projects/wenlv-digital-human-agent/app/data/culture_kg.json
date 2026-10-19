@@ -1,0 +1,37 @@
+{
+  "nodes": [
+    {"id": "artifact_bronze_drum", "name": "青铜鼓", "type": "文物"},
+    {"id": "heritage_shadow_play", "name": "皮影戏", "type": "非遗"},
+    {"id": "site_old_street", "name": "古城街区", "type": "景区"},
+    {"id": "craft_lacquer", "name": "漆器工艺", "type": "工艺"},
+    {"id": "era_ming", "name": "明代", "type": "朝代"}
+  ],
+  "edges": [
+    {"source": "artifact_bronze_drum", "target": "era_ming", "relation": "相关时期"},
+    {"source": "heritage_shadow_play", "target": "site_old_street", "relation": "常态展演地"},
+    {"source": "craft_lacquer", "target": "site_old_street", "relation": "展示地点"},
+    {"source": "artifact_bronze_drum", "target": "site_old_street", "relation": "馆藏地点"}
+  ],
+  "evidence": {
+    "artifact_bronze_drum": [
+      "市博物馆馆藏编目2023版",
+      "地方志文博卷第12章"
+    ],
+    "heritage_shadow_play": [
+      "省级非遗名录2022增补",
+      "文化馆年度演出档案"
+    ],
+    "site_old_street": [
+      "景区官方导览手册2024",
+      "文旅局公开导览资料"
+    ],
+    "craft_lacquer": [
+      "传统工艺保护中心备案",
+      "非遗传承人口述史访谈"
+    ],
+    "era_ming": [
+      "地方历史研究院专题论文",
+      "馆藏年代断代报告"
+    ]
+  }
+}
