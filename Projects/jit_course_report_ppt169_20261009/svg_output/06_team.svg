@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+<g id="title"><text x="64" y="92" font-family="Microsoft YaHei" font-size="40" font-weight="700" fill="#18324F">小组分工与模块责任</text></g>
+<g id="native-table">
+<rect x="64" y="158" width="1152" height="52" fill="#F3F6FA"/>
+<text x="82" y="194" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#18324F">角色与人员</text><text x="402" y="194" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#18324F">主责模块</text><text x="642" y="194" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#18324F">核心工作</text>
+<text x="82" y="257" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">A．数据与特征工程师</text><text x="82" y="293" font-family="Microsoft YaHei" font-size="24" fill="#2166AC">白沁禾</text>
+<text x="402" y="257" font-family="Microsoft YaHei" font-size="24" fill="#263444">数据采集、</text><text x="402" y="293" font-family="Microsoft YaHei" font-size="24" fill="#263444">特征工程</text>
+<text x="642" y="245" font-family="Microsoft YaHei" font-size="24" fill="#263444">Git仓库解析、SZZ、Kamei 14维特征、</text><text x="642" y="279" font-family="Microsoft YaHei" font-size="24" fill="#263444">数据清洗与持久化、训练集构建</text>
+<line x1="64" y1="320" x2="1216" y2="320" stroke="#D4DEE8" stroke-width="1"/>
+<text x="82" y="367" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">B．模型工程师</text><text x="82" y="403" font-family="Microsoft YaHei" font-size="24" fill="#2166AC">张艺馨</text>
+<text x="402" y="367" font-family="Microsoft YaHei" font-size="24" fill="#263444">模型训练、</text><text x="402" y="403" font-family="Microsoft YaHei" font-size="24" fill="#263444">评估与解释</text>
+<text x="642" y="354" font-family="Microsoft YaHei" font-size="24" fill="#263444">至少8个模型（经典ML与DL）、两类</text><text x="642" y="388" font-family="Microsoft YaHei" font-size="24" fill="#263444">评估指标、数据划分、模型对比选型、</text><text x="642" y="422" font-family="Microsoft YaHei" font-size="24" fill="#263444">SHAP等解释</text>
+<line x1="64" y1="430" x2="1216" y2="430" stroke="#D4DEE8" stroke-width="1"/>
+<text x="82" y="477" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">C．后端与系统工程师</text><text x="82" y="513" font-family="Microsoft YaHei" font-size="24" fill="#2166AC">侯洁</text>
+<text x="402" y="477" font-family="Microsoft YaHei" font-size="24" fill="#263444">预测服务、</text><text x="402" y="513" font-family="Microsoft YaHei" font-size="24" fill="#263444">工程化</text>
+<text x="642" y="464" font-family="Microsoft YaHei" font-size="24" fill="#263444">在线预测API、数据与模型封装、</text><text x="642" y="498" font-family="Microsoft YaHei" font-size="24" fill="#263444">仓库集成或Webhook、CI/CD、</text><text x="642" y="532" font-family="Microsoft YaHei" font-size="24" fill="#263444">部署与稳定性</text>
+<line x1="64" y1="540" x2="1216" y2="540" stroke="#D4DEE8" stroke-width="1"/>
+<text x="82" y="587" font-family="Microsoft YaHei" font-size="24" font-weight="700" fill="#263444">D．前端与产品工程师</text><text x="82" y="623" font-family="Microsoft YaHei" font-size="24" fill="#2166AC">张欣悦</text>
+<text x="402" y="587" font-family="Microsoft YaHei" font-size="24" fill="#263444">可视化、</text><text x="402" y="623" font-family="Microsoft YaHei" font-size="24" fill="#263444">产品体验</text>
+<text x="642" y="574" font-family="Microsoft YaHei" font-size="24" fill="#263444">风险列表、趋势看板、详情页、结果与</text><text x="642" y="608" font-family="Microsoft YaHei" font-size="24" fill="#263444">解释展示、交互打磨、产品文档与演示</text>
+</g>
+<g id="footer"><text x="64" y="684" font-family="Microsoft YaHei" font-size="20" fill="#617286">以上为工作分配，不表示所有功能已经实现。</text><text x="1188" y="684" font-family="Microsoft YaHei" font-size="20" fill="#617286">06</text></g>
+</svg>

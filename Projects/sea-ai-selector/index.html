@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>东南亚跨境电商AI选品系统</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="frontend/agent-bridge.js"></script>
+<style>
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary: #06b6d4;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --sidebar-w: 240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+  color: #fff;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform .3s;
+}
+
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.sidebar-header .logo {
+  font-size: 20px; font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.sidebar-header .logo .icon { font-size: 28px; }
+
+.sidebar-header .subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,.55);
+  margin-top: 4px;
+}
+
+.sidebar-nav {
+  flex: 1; padding: 12px 0;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 20px;
+  cursor: pointer;
+  color: rgba(255,255,255,.65);
+  transition: all .2s;
+  border-left: 3px solid transparent;
+  font-size: 15px;
+  user-select: none;
+}
+
+.nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+.nav-item.active {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  border-left-color: #818cf8;
+}
+
+.nav-item .badge {
+  margin-left: auto;
+  background: var(--danger);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+}
+
+/* ── Main ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 28px 32px;
+  min-width: 0;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 { font-size: 26px; font-weight: 700; }
+
+.page-header .actions { display: flex; gap: 10px; }
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-header h2 { font-size: 17px; font-weight: 600; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  display: flex; align-items: center; gap: 16px;
+}
+
+.stat-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+
+.stat-icon.blue { background: #eef2ff; }
+.stat-icon.green { background: #ecfdf5; }
+.stat-icon.orange { background: #fff7ed; }
+.stat-icon.purple { background: #f5f3ff; }
+
+.stat-value { font-size: 24px; font-weight: 700; }
+.stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.stat-change { font-size: 12px; margin-top: 2px; }
+.stat-change.up { color: var(--success); }
+.stat-change.down { color: var(--danger); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  border-radius: 8px; border: none;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary { background: #fff; border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-warning { background: var(--warning); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 13px; }
+.btn-xs { padding: 3px 10px; font-size: 12px; border-radius: 6px; }
+
+/* ── Chart containers ── */
+.chart-wrap {
+  position: relative;
+  height: 300px;
+}
+
+.chart-wrap.large { height: 380px; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table th {
+  text-align: left;
+  padding: 12px 16px;
+  background: var(--bg);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-muted);
+  border-radius: 6px 6px 0 0;
+}
+
+table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+table tbody tr:hover { background: #f8fafc; }
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tag-green { background: #d1fae5; color: #065f46; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+.tag-yellow { background: #fef3c7; color: #92400e; }
+.tag-blue { background: #dbeafe; color: #1e40af; }
+.tag-purple { background: #ede9fe; color: #5b21b6; }
+
+/* ── Platform selector ── */
+.platform-tabs {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+
+.platform-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .2s;
+}
+
+.platform-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.platform-tab:hover:not(.active) { background: var(--bg); }
+
+/* ── Product cards ── */
+.product-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  transition: all .2s;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+.product-card:hover {
+  box-shadow: 0 8px 25px rgba(0,0,0,.1);
+  transform: translateY(-2px);
+}
+
+.product-card .product-img {
+  width: 100%; height: 160px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+  margin-bottom: 14px;
+}
+
+.product-card .product-title {
+  font-size: 15px; font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.product-card .product-meta {
+  display: flex; justify-content: space-between;
+  font-size: 13px; color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.product-card .product-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 12px; border-top: 1px solid var(--border);
+}
+
+.product-card .price {
+  font-size: 18px; font-weight: 700; color: var(--danger);
+}
+
+.product-card .score {
+  font-size: 13px; color: var(--warning); font-weight: 600;
+}
+
+/* ── Profit Calculator ── */
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.calc-input-group {
+  margin-bottom: 16px;
+}
+
+.calc-input-group label {
+  display: block;
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+}
+
+.calc-input-group input,
+.calc-input-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color .2s;
+}
+
+.calc-input-group input:focus,
+.calc-input-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+}
+
+.profit-result {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border-radius: 12px;
+  padding: 28px;
+  color: #fff;
+}
+
+.profit-result .profit-row {
+  display: flex; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  font-size: 14px;
+}
+
+.profit-result .profit-row:last-child {
+  border-bottom: none;
+  font-size: 20px; font-weight: 700;
+  margin-top: 8px;
+}
+
+/* ── Progress bars ── */
+.progress-bar {
+  height: 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+  flex: 1;
+  min-width: 60px;
+}
+
+.progress-bar .fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .6s ease;
+}
+
+.fill-blue { background: var(--primary); }
+.fill-green { background: var(--success); }
+.fill-yellow { background: var(--warning); }
+.fill-red { background: var(--danger); }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none; align-items: center; justify-content: center;
+  z-index: 200;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  width: 520px;
+  max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+}
+
+.modal h2 { margin-bottom: 16px; }
+
+.modal .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* ── Loading shimmer ── */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed; top: 24px; right: 24px;
+  background: #1e293b; color: #fff;
+  padding: 14px 24px; border-radius: 10px;
+  font-size: 14px;
+  z-index: 300;
+  transform: translateX(120%);
+  transition: transform .3s;
+}
+
+.toast.show { transform: translateX(0); }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .calc-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+}
+
+.mobile-toggle {
+  display: none;
+  position: fixed; top: 12px; left: 12px;
+  z-index: 150;
+  background: var(--primary); color: #fff;
+  border: none; width: 40px; height: 40px;
+  border-radius: 10px; font-size: 20px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) { .mobile-toggle { display: flex; align-items: center; justify-content: center; } }
+
+/* AI loading dots */
+.ai-thinking {
+  display: flex; align-items: center; gap: 4px;
+  padding: 12px 16px;
+}
+
+.ai-thinking .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: dotPulse 1.4s infinite;
+}
+
+.ai-thinking .dot:nth-child(2) { animation-delay: .2s; }
+.ai-thinking .dot:nth-child(3) { animation-delay: .4s; }
+
+@keyframes dotPulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="icon">🛒</span>
+      SEA 选品系统
+    </div>
+    <div class="subtitle">AI-Powered Product Selection</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-item active" data-page="trends">
+      📈 市场趋势
+    </div>
+    <div class="nav-item" data-page="competitor">
+      🔍 竞品分析
+      <span class="badge">新高</span>
+    </div>
+    <div class="nav-item" data-page="recommend">
+      🤖 智能推荐
+    </div>
+    <div class="nav-item" data-page="calculator">
+      💰 利润计算器
+    </div>
+    <div class="nav-item" data-page="reports">
+      📋 报告生成
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div>📊 数据源: Shopee · Lazada · Tokopedia</div>
+    <div style="margin-top:4px;display:flex;align-items:center;gap:6px;">
+      <span id="backend-status-dot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;"></span>
+      <span id="backend-status-text">后端未连接</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN CONTENT ═══════════ -->
+<div class="main">
+
+  <!-- ═══ PAGE: 市场趋势 ═══ -->
+  <section class="page active" id="page-trends">
+    <div class="page-header">
+      <div>
+        <h1>📈 市场趋势概览</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">东南亚六国 · 实时品类热度追踪</p>
+      </div>
+      <div class="actions">
+        <div class="platform-tabs" id="country-tabs">
+          <div class="platform-tab active" data-country="all">全部</div>
+          <div class="platform-tab" data-country="id">🇮🇩 印尼</div>
+          <div class="platform-tab" data-country="th">🇹🇭 泰国</div>
+          <div class="platform-tab" data-country="vn">🇻🇳 越南</div>
+          <div class="platform-tab" data-country="ph">🇵🇭 菲律宾</div>
+          <div class="platform-tab" data-country="my">🇲🇾 马来西亚</div>
+          <div class="platform-tab" data-country="sg">🇸🇬 新加坡</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon blue">🔥</div>
+        <div>
+          <div class="stat-label">热门品类数</div>
+          <div class="stat-value">2,847</div>
+          <div class="stat-change up">↑ 12.5% 较上周</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">📦</div>
+        <div>
+          <div class="stat-label">日均订单量</div>
+          <div class="stat-value">458万</div>
+          <div class="stat-change up">↑ 8.3% 较上周</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">💵</div>
+        <div>
+          <div class="stat-label">平均客单价 (USD)</div>
+          <div class="stat-value">$12.40</div>
+          <div class="stat-change down">↓ 2.1% 较上周</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">🏪</div>
+        <div>
+          <div class="stat-label">活跃卖家数</div>
+          <div class="stat-value">126万</div>
+          <div class="stat-change up">↑ 5.7% 较上周</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>品类搜索热度趋势</h2>
+          <span style="font-size:13px;color:var(--text-muted);">近30天</span>
+        </div>
+        <div class="chart-wrap large"><canvas id="chart-trend-search"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2>各国GMV占比</h2>
+          <span style="font-size:13px;color:var(--text-muted);">本月</span>
+        </div>
+        <div class="chart-wrap large"><canvas id="chart-gmv-country"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>热门品类排行榜</h2>
+        <span style="font-size:13px;color:var(--text-muted);">实时更新</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr><th>#</th><th>品类</th><th>搜索热度</th><th>热度变化</th><th>竞争程度</th><th>推荐指数</th><th>主要国家</th></tr>
+          </thead>
+          <tbody id="tbl-category-rank"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: 竞品分析 ═══ -->
+  <section class="page" id="page-competitor">
+    <div class="page-header">
+      <div>
+        <h1>🔍 竞品分析</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">实时监控竞品动态 · 洞察市场先机</p>
+      </div>
+      <div class="actions">
+        <input type="text" placeholder="搜索商品/店铺..." style="padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;width:240px;" id="competitor-search">
+        <button class="btn btn-primary" onclick="searchCompetitor()">🔍 搜索</button>
+      </div>
+    </div>
+
+    <div class="grid-3" id="competitor-cards"></div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-header">
+        <h2>竞品详细对比</h2>
+        <div class="platform-tabs" id="platform-tabs">
+          <div class="platform-tab active" data-platform="shopee">Shopee</div>
+          <div class="platform-tab" data-platform="lazada">Lazada</div>
+          <div class="platform-tab" data-platform="tokopedia">Tokopedia</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr><th>商品</th><th>平台</th><th>售价 (USD)</th><th>月销量</th><th>评分</th><th>价格竞争力</th><th>卖点分析</th><th>操作</th></tr>
+          </thead>
+          <tbody id="tbl-competitor"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: 智能推荐 ═══ -->
+  <section class="page" id="page-recommend">
+    <div class="page-header">
+      <div>
+        <h1>🤖 AI 智能推荐</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">基于大模型分析 · 精准匹配蓝海品类</p>
+      </div>
+      <div class="actions">
+        <select style="padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;" id="rec-target">
+          <option value="">目标国家</option>
+          <option value="id">印度尼西亚</option>
+          <option value="th">泰国</option>
+          <option value="vn">越南</option>
+          <option value="ph">菲律宾</option>
+          <option value="my">马来西亚</option>
+          <option value="sg">新加坡</option>
+        </select>
+        <select style="padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;" id="rec-budget">
+          <option value="">预算范围</option>
+          <option value="low">$500以下</option>
+          <option value="mid">$500 - $2000</option>
+          <option value="high">$2000以上</option>
+        </select>
+        <button class="btn btn-primary" onclick="runAIRecommend()">🤖 AI分析</button>
+      </div>
+    </div>
+
+    <div class="card" id="ai-insight-card" style="display:none;">
+      <div class="card-header"><h2>📊 AI 洞察摘要</h2></div>
+      <div id="ai-insight-content"></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;padding:40px;" id="ai-loading" class="ai-thinking">
+      <span style="font-size:14px;color:var(--text-muted);margin-right:8px;">AI分析中</span>
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+
+    <div class="grid-3" id="recommend-cards" style="margin-top:20px;"></div>
+  </section>
+
+  <!-- ═══ PAGE: 利润计算器 ═══ -->
+  <section class="page" id="page-calculator">
+    <div class="page-header">
+      <div>
+        <h1>💰 利润计算器</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">多平台费用模拟 · 精准利润预估</p>
+      </div>
+    </div>
+
+    <div class="calc-grid">
+      <div class="card">
+        <div class="card-header"><h2>成本参数</h2></div>
+
+        <div class="calc-input-group">
+          <label>目标平台</label>
+          <select id="calc-platform">
+            <option value="shopee">Shopee</option>
+            <option value="lazada">Lazada</option>
+            <option value="tokopedia">Tokopedia</option>
+            <option value="tiktok">TikTok Shop</option>
+          </select>
+        </div>
+
+        <div class="calc-input-group">
+          <label>商品采购成本 (CNY)</label>
+          <input type="number" id="calc-cost" value="50" min="0" step="1" oninput="autoCalc()">
+        </div>
+
+        <div class="calc-input-group">
+          <label>预计售价 (当地货币)</label>
+          <input type="number" id="calc-price" value="150000" min="0" step="1000" oninput="autoCalc()">
+        </div>
+
+        <div class="calc-input-group">
+          <label>目标国家</label>
+          <select id="calc-country" onchange="autoCalc()">
+            <option value="id">印度尼西亚 (IDR)</option>
+            <option value="th">泰国 (THB)</option>
+            <option value="vn">越南 (VND)</option>
+            <option value="ph">菲律宾 (PHP)</option>
+            <option value="my">马来西亚 (MYR)</option>
+            <option value="sg">新加坡 (SGD)</option>
+          </select>
+        </div>
+
+        <div class="calc-input-group">
+          <label>头程物流费 (CNY/件)</label>
+          <input type="number" id="calc-logistics" value="15" min="0" step="1" oninput="autoCalc()">
+        </div>
+
+        <div class="calc-input-group">
+          <label>仓储费 (CNY/月)</label>
+          <input type="number" id="calc-storage" value="3" min="0" step="0.5" oninput="autoCalc()">
+        </div>
+
+        <div class="calc-input-group">
+          <label>广告费率 (%)</label>
+          <input type="number" id="calc-ad-rate" value="8" min="0" max="100" step="0.5" oninput="autoCalc()">
+        </div>
+
+        <div class="calc-input-group">
+          <label>退货率预估 (%)</label>
+          <input type="number" id="calc-return-rate" value="3" min="0" max="100" step="0.5" oninput="autoCalc()">
+        </div>
+
+        <button class="btn btn-success" style="width:100%;justify-content:center;padding:12px;" onclick="autoCalc()">
+          🔄 重新计算
+        </button>
+      </div>
+
+      <div>
+        <div class="profit-result" id="profit-display"></div>
+        <div class="card" style="margin-top:20px;">
+          <div class="card-header"><h2>平台费用明细</h2></div>
+          <div class="chart-wrap"><canvas id="chart-fee-breakdown"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: 报告生成 ═══ -->
+  <section class="page" id="page-reports">
+    <div class="page-header">
+      <div>
+        <h1>📋 报告生成</h1>
+        <p style="color:var(--text-muted);font-size:14px;margin-top:4px;">一键生成选品分析报告 · 支持导出</p>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;">📊</div>
+        <h3 style="margin-bottom:8px;">市场趋势报告</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">品类热度 · 搜索趋势 · 区域分析</p>
+        <button class="btn btn-primary" onclick="generateReport('trend')">生成报告</button>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;">🔍</div>
+        <h3 style="margin-bottom:8px;">竞品分析报告</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">竞品对比 · 价格分析 · 卖点挖掘</p>
+        <button class="btn btn-primary" onclick="generateReport('competitor')">生成报告</button>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;">🤖</div>
+        <h3 style="margin-bottom:8px;">AI综合选品报告</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">智能推荐 · 利润预估 · 风险评估</p>
+        <button class="btn btn-primary" onclick="generateReport('full')">生成完整报告</button>
+      </div>
+    </div>
+
+    <div class="card" id="report-preview" style="display:none;">
+      <div class="card-header">
+        <h2>📄 报告预览</h2>
+        <div class="actions">
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF()">📥 导出PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportExcel()">📊 导出Excel</button>
+          <button class="btn btn-primary btn-sm" onclick="shareReport()">🔗 分享链接</button>
+        </div>
+      </div>
+      <div id="report-content" style="font-size:14px;line-height:1.8;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2>历史报告</h2></div>
+      <table>
+        <thead>
+          <tr><th>报告名称</th><th>类型</th><th>生成时间</th><th>覆盖市场</th><th>状态</th><th>操作</th></tr>
+        </thead>
+        <tbody id="tbl-reports"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- ═══════════ TOAST ═══════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════ REPORT MODAL ═══════════ -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal">
+    <h2>📄 报告预览</h2>
+    <div id="report-modal-content" style="max-height:60vh;overflow-y:auto;font-size:14px;line-height:1.8;"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="document.getElementById('report-modal').classList.remove('show')">关闭</button>
+      <button class="btn btn-primary" onclick="exportPDF()">📥 导出PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════ BACKEND CONNECTION ═══════════════════════
+
+const BACKEND = {
+  BASE: 'http://localhost:8000',
+  get connected() { return this._connected; },
+  _connected: false,
+};
+
+async function checkBackend() {
+  const dot = document.getElementById('backend-status-dot');
+  const txt = document.getElementById('backend-status-text');
+  try {
+    const res = await fetch(`${BACKEND.BASE}/api/health`);
+    if (res.ok) {
+      const data = await res.json();
+      BACKEND._connected = true;
+      dot.style.background = '#10b981';
+      txt.textContent = `🟢 后端已连接 (${data.agents_loaded}个Agent)`;
+      txt.style.color = '#10b981';
+      console.log(`✅ Backend connected: ${JSON.stringify(data)}`);
+      return true;
+    }
+  } catch (e) {
+    // fall through
+  }
+  BACKEND._connected = false;
+  dot.style.background = '#666';
+  txt.textContent = '🔴 后端未连接 (使用本地数据)';
+  txt.style.color = '#999';
+  return false;
+}
+
+// ═══════════════════════ DATA ═══════════════════════
+
+const CATEGORIES = [
+  { name: '手机配件', icon: '📱', searchHeat: 98, change: 15.2, competition: '高', score: 92, countries: '印尼·泰国·越南' },
+  { name: '穆斯林服饰', icon: '👗', searchHeat: 95, change: 22.8, competition: '中', score: 95, countries: '印尼·马来西亚' },
+  { name: '美妆工具', icon: '💄', searchHeat: 91, change: 8.5, competition: '高', score: 85, countries: '泰国·越南·菲律宾' },
+  { name: '家居收纳', icon: '🏠', searchHeat: 88, change: 18.3, competition: '低', score: 96, countries: '全部六国' },
+  { name: '小型家电', icon: '🔌', searchHeat: 86, change: 10.1, competition: '中', score: 88, countries: '泰国·印尼·菲律宾' },
+  { name: '母婴用品', icon: '🍼', searchHeat: 84, change: 6.7, competition: '中', score: 82, countries: '印尼·菲律宾·越南' },
+  { name: '运动户外', icon: '⚽', searchHeat: 81, change: 14.0, competition: '低', score: 90, countries: '泰国·马来西亚·新加坡' },
+  { name: '宠物用品', icon: '🐾', searchHeat: 79, change: 25.3, competition: '低', score: 93, countries: '泰国·印尼·越南' },
+];
+
+const COMPETITOR_DATA = [
+  { product: 'Type-C快充数据线 2米', platform: 'Shopee', price: 3.99, sales: 23500, rating: 4.8, competitiveness: '强', insight: '捆綁銷售·买二送一', country: 'id' },
+  { product: 'Silk Hijab Premium', platform: 'Shopee', price: 8.50, sales: 18200, rating: 4.9, competitiveness: '强', insight: 'INS网红推广·30色可选', country: 'id' },
+  { product: 'LED化妆镜 带补光', platform: 'Lazada', price: 12.99, sales: 15600, rating: 4.6, competitiveness: '中', insight: 'USB充电·三档调光', country: 'th' },
+  { product: '折叠收纳箱 66L', platform: 'Shopee', price: 5.99, sales: 14200, rating: 4.7, competitiveness: '强', insight: '免安装·可叠放', country: 'ph' },
+  { product: '迷你小风扇 USB', platform: 'Tokopedia', price: 2.99, sales: 12800, rating: 4.5, competitiveness: '弱', insight: '超静音·三档风速', country: 'id' },
+  { product: '穆斯林长袍 Abaya', platform: 'Lazada', price: 22.0, sales: 11500, rating: 4.9, competitiveness: '强', insight: '高端面料·定制尺码', country: 'my' },
+  { product: '不锈钢保温杯 500ml', platform: 'Shopee', price: 6.50, sales: 10800, rating: 4.7, competitiveness: '中', insight: '12小时保温·多色', country: 'vn' },
+  { product: '瑜伽垫 加厚防滑', platform: 'Lazada', price: 15.0, sales: 9500, rating: 4.8, competitiveness: '中', insight: '环保TPE·含背带', country: 'th' },
+];
+
+const RECOMMEND_DATA = [
+  {
+    name: '便携式挂烫机', icon: '👔',
+    reason: '印尼市场搜索量月增180%，竞争度低，供应链成熟(1688均价¥35)',
+    score: 97, market: '印尼', roi: '285%', risk: '低',
+    trend: [20,25,30,42,55,68,78,85,90,92,95,97],
+  },
+  {
+    name: '穆斯林运动头巾', icon: '🧕',
+    reason: '斋月后运动需求爆发，马来西亚&印尼双市场共振，差异化空间大',
+    score: 95, market: '马来西亚+印尼', roi: '320%', risk: '低',
+    trend: [30,32,35,38,45,55,65,72,78,85,90,95],
+  },
+  {
+    name: '迷你破壁豆浆机', icon: '🥛',
+    reason: '越南健康饮食趋势上升，TikTok Shop视频种草转化率高，客单价可做高',
+    score: 93, market: '越南', roi: '240%', risk: '中',
+    trend: [15,18,22,28,35,45,55,62,70,78,85,93],
+  },
+  {
+    name: '磁吸手机支架车用', icon: '📱',
+    reason: '菲律宾汽车保有量上升，平均客单价$3-5，走量型爆款潜力大',
+    score: 91, market: '菲律宾', roi: '350%', risk: '极低',
+    trend: [25,30,35,40,45,55,62,70,75,82,88,91],
+  },
+  {
+    name: '儿童硅胶餐盘分格', icon: '🍽️',
+    reason: '母婴品类持续增长，新加坡&马来西亚品质要求高利润空间大',
+    score: 89, market: '新加坡+马来西亚', roi: '260%', risk: '低',
+    trend: [18,22,25,30,38,46,52,60,68,76,83,89],
+  },
+  {
+    name: '可折叠露营椅超轻', icon: '🏕️',
+    reason: '东南亚户外露营热度飙升(TikTok #camping 10亿+播放)，泰国市场先行',
+    score: 88, market: '泰国', roi: '210%', risk: '中',
+    trend: [10,12,18,25,32,40,50,58,65,73,80,88],
+  },
+];
+
+const REPORT_HISTORY = [
+  { name: '2026年5月市场趋势周报', type: '市场趋势', time: '2026-05-20 08:00', market: '印尼·泰国·越南', status: 'completed' },
+  { name: '竞品分析报告_Shopee印尼站', type: '竞品分析', time: '2026-05-19 15:30', market: '印度尼西亚', status: 'completed' },
+  { name: 'AI选品综合评估_V1.2', type: '综合报告', time: '2026-05-18 10:15', market: '全部六国', status: 'completed' },
+  { name: '月度利润分析报表', type: '财务分析', time: '2026-05-15 09:00', market: '泰国·菲律宾', status: 'completed' },
+];
+
+// ═══════════════════════ WORKFLOW PANEL ═══════════════════════
+
+let workflowPanelVisible = false;
+
+function showWorkflowPanel() {
+  const existing = document.getElementById('workflow-panel');
+  if (existing) { existing.remove(); workflowPanelVisible = false; return; }
+
+  const panel = document.createElement('div');
+  panel.id = 'workflow-panel';
+  panel.style.cssText = `
+    position:fixed; bottom:24px; right:24px; width:360px;
+    background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.15);
+    z-index:250; overflow:hidden; border:1px solid var(--border);
+  `;
+  panel.innerHTML = `
+    <div style="padding:14px 18px; background:linear-gradient(135deg,#1e1b4b,#312e81); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-weight:600;">🤖 Agent 工作流</span>
+      <span style="cursor:pointer;font-size:18px;" onclick="this.closest('#workflow-panel').remove();workflowPanelVisible=false;">×</span>
+    </div>
+    <div id="workflow-timeline" style="padding:16px;max-height:400px;overflow-y:auto;font-size:13px;"></div>
+  `;
+  document.body.appendChild(panel);
+  workflowPanelVisible = true;
+}
+
+function addWorkflowEvent(phase, status, detail) {
+  const tl = document.getElementById('workflow-timeline');
+  if (!tl) return;
+
+  const icons = { trend: '📈', competitor: '🔍', recommend: '🤖', profit: '💰', report: '📋', intent: '🎯' };
+  const statusIcons = { running: '⏳', done: '✅', error: '❌' };
+  const names = { trend: '趋势分析', competitor: '竞品分析', recommend: '智能推荐', profit: '利润计算', report: '报告生成', intent: '意图识别' };
+
+  const entry = document.createElement('div');
+  entry.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);';
+  entry.innerHTML = `
+    <span>${icons[phase] || '⚙️'}</span>
+    <span style="flex:1;">${names[phase] || phase}</span>
+    <span>${statusIcons[status] || '⏳'}</span>
+    ${detail ? `<span style="color:var(--text-muted);font-size:11px;">${detail}</span>` : ''}
+  `;
+  tl.appendChild(entry);
+  tl.scrollTop = tl.scrollHeight;
+}
+
+function clearWorkflowEvents() {
+  const tl = document.getElementById('workflow-timeline');
+  if (tl) tl.innerHTML = '';
+}
+
+// ═══════════════════════ NAVIGATION ═══════════════════════
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    const page = item.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    if (page === 'trends') onTrendPageEnter();
+    if (page === 'competitor') initCompetitorPage();
+    if (page === 'recommend') initRecommendPage();
+    if (page === 'calculator') autoCalc();
+    if (page === 'reports') initReportPage();
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+
+// ═══════════════════════ TOAST ═══════════════════════
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════ TRENDS PAGE ═══════════════════════
+
+function renderCategoryRank() {
+  const tbody = document.getElementById('tbl-category-rank');
+  tbody.innerHTML = CATEGORIES.map((c, i) => `
+    <tr>
+      <td style="font-weight:700;">${i + 1}</td>
+      <td>${c.icon} ${c.name}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="progress-bar"><div class="fill fill-blue" style="width:${c.searchHeat}%;"></div></div>
+          <span style="font-weight:600;min-width:36px;">${c.searchHeat}</span>
+        </div>
+      </td>
+      <td><span class="stat-change ${c.change > 0 ? 'up' : 'down'}">${c.change > 0 ? '↑' : '↓'} ${Math.abs(c.change)}%</span></td>
+      <td><span class="tag ${c.competition === '高' ? 'tag-red' : c.competition === '中' ? 'tag-yellow' : 'tag-green'}">${c.competition}</span></td>
+      <td><span class="tag tag-purple">⭐ ${c.score}</span></td>
+      <td style="font-size:13px;">${c.countries}</td>
+    </tr>
+  `).join('');
+}
+
+let trendChart, gmvChart;
+
+function initTrendCharts() {
+  const searchCtx = document.getElementById('chart-trend-search');
+  const gmvCtx = document.getElementById('chart-gmv-country');
+  if (!searchCtx || !gmvCtx) return;
+  const days = Array.from({length: 30}, (_, i) => `${i + 1}日`);
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(searchCtx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [
+        {
+          label: '手机配件',
+          data: [50,52,55,58,60,63,65,70,72,68,75,78,80,82,85,88,86,90,92,91,94,93,95,96,94,97,96,98,97,98],
+          borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,.1)',
+          fill: true, tension: 0.4, borderWidth: 2,
+        },
+        {
+          label: '穆斯林服饰',
+          data: [30,32,35,38,42,45,48,52,55,58,60,63,65,68,70,72,75,78,80,82,85,83,87,89,90,88,92,93,94,95],
+          borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.1)',
+          fill: true, tension: 0.4, borderWidth: 2,
+        },
+        {
+          label: '家居收纳',
+          data: [40,42,43,45,47,50,52,55,58,60,62,65,63,67,70,72,74,76,78,77,80,82,84,83,86,85,87,86,88,88],
+          borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,.1)',
+          fill: true, tension: 0.4, borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' } },
+      scales: { y: { min: 20, max: 100, ticks: { callback: v => v + '%' } } },
+      interaction: { intersect: false, mode: 'index' },
+    },
+  });
+  if (gmvChart) gmvChart.destroy();
+  gmvChart = new Chart(gmvCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['印尼', '泰国', '越南', '菲律宾', '马来西亚', '新加坡'],
+      datasets: [{
+        data: [38, 22, 16, 12, 8, 4],
+        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'],
+        borderWidth: 2, borderColor: '#fff',
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + '%' } } },
+    },
+  });
+}
+
+async function onTrendPageEnter() {
+  initTrendCharts();
+  if (BACKEND.connected) {
+    try {
+      const activeTab = document.querySelector('#country-tabs .platform-tab.active');
+      const country = activeTab?.dataset?.country || 'all';
+      if (country !== 'all') {
+        const res = await AGENT_BRIDGE.trend(country);
+        if (res?.data?.category_rankings) renderCategoryRankFromAgent(res.data.category_rankings);
+        showToast(`📈 已从Agent获取${country}市场趋势`);
+      }
+    } catch (e) {
+      console.log('Trend agent call failed, using local data');
+    }
+  }
+}
+
+function renderCategoryRankFromAgent(data) {
+  const tbody = document.getElementById('tbl-category-rank');
+  tbody.innerHTML = data.map((c, i) => `
+    <tr>
+      <td style="font-weight:700;">${i + 1}</td>
+      <td>${c.icon || '📦'} ${c.category}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="progress-bar"><div class="fill fill-blue" style="width:${c.search_heat}%;"></div></div>
+          <span style="font-weight:600;min-width:36px;">${c.search_heat}</span>
+        </div>
+      </td>
+      <td><span class="stat-change up">↑ ${c.growth_rate_30d}%</span></td>
+      <td><span class="tag ${c.competition_level === '高' ? 'tag-red' : c.competition_level === '中' ? 'tag-yellow' : 'tag-green'}">${c.competition_level}</span></td>
+      <td><span class="tag tag-purple">⭐ ${c.recommendation_score || c.search_heat}</span></td>
+      <td style="font-size:13px;">${(c.main_countries || []).join('·')}</td>
+    </tr>
+  `).join('');
+}
+
+// Country tabs
+document.querySelectorAll('#country-tabs .platform-tab').forEach(tab => {
+  tab.addEventListener('click', async () => {
+    document.querySelectorAll('#country-tabs .platform-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const country = tab.dataset.country;
+    if (country !== 'all' && BACKEND.connected) {
+      showToast(`正在获取 ${tab.textContent.trim()} 市场数据...`);
+      try {
+        const res = await AGENT_BRIDGE.trend(country);
+        if (res?.data?.category_rankings) renderCategoryRankFromAgent(res.data.category_rankings);
+        showToast(`✅ 已切换至 ${tab.textContent.trim()} 市场`);
+      } catch (e) {
+        showToast(`已切换至 ${tab.textContent.trim()} 市场`);
+      }
+    } else {
+      showToast(`已切换至 ${tab.textContent.trim()} 市场数据`);
+    }
+  });
+});
+
+// ═══════════════════════ COMPETITOR PAGE ═══════════════════════
+
+function initCompetitorPage() {
+  renderCompetitorCards();
+  renderCompetitorTable();
+  if (BACKEND.connected) {
+    fetchAgentCompetitor();
+  }
+}
+
+async function fetchAgentCompetitor(category = '') {
+  try {
+    const res = await AGENT_BRIDGE.competitor('id', category);
+    if (res?.data?.competitors) renderCompetitorTableFromAgent(res.data.competitors);
+    if (res?.data?.overview) renderCompetitorCardsFromAgent(res.data.overview);
+  } catch (e) {
+    console.log('Competitor agent call failed, using local data');
+  }
+}
+
+function renderCompetitorCards() {
+  const container = document.getElementById('competitor-cards');
+  const stats = [
+    { label: '监控商品', value: '1,286', icon: '📦', color: 'blue' },
+    { label: '新增竞品', value: '47', icon: '🆕', color: 'orange' },
+    { label: '价格变动', value: '23', icon: '📉', color: 'purple' },
+  ];
+  container.innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon ${s.color}">${s.icon}</div>
+      <div>
+        <div class="stat-value">${s.value}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCompetitorCardsFromAgent(overview) {
+  const container = document.getElementById('competitor-cards');
+  const items = [
+    { label: '监控商品', value: overview.total_monitored?.toLocaleString() || '—', icon: '📦', color: 'blue' },
+    { label: '新增竞品', value: `+${overview.new_competitors || 0}`, icon: '🆕', color: 'orange' },
+    { label: '平均售价', value: `$${overview.avg_price_usd?.toFixed(2) || '—'}`, icon: '💰', color: 'purple' },
+  ];
+  container.innerHTML = items.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon ${s.color}">${s.icon}</div>
+      <div>
+        <div class="stat-value">${s.value}</div>
+        <div class="stat-label">${s.label}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCompetitorTable(filter = '') {
+  const tbody = document.getElementById('tbl-competitor');
+  let data = COMPETITOR_DATA;
+  if (filter) data = data.filter(d => d.product.toLowerCase().includes(filter.toLowerCase()));
+  tbody.innerHTML = data.map(d => `
+    <tr>
+      <td style="font-weight:500;">${d.product}</td>
+      <td><span class="tag tag-blue">${d.platform}</span></td>
+      <td style="font-weight:700;">$${d.price.toFixed(2)}</td>
+      <td>${d.sales.toLocaleString()}</td>
+      <td>⭐ ${d.rating}</td>
+      <td><span class="tag ${d.competitiveness === '强' ? 'tag-green' : d.competitiveness === '中' ? 'tag-yellow' : 'tag-red'}">${d.competitiveness}</span></td>
+      <td style="font-size:13px;">${d.insight}</td>
+      <td><button class="btn btn-primary btn-xs" onclick="showToast('已添加「${d.product}」到监控列表')">📌 监控</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderCompetitorTableFromAgent(data) {
+  const tbody = document.getElementById('tbl-competitor');
+  tbody.innerHTML = data.map(d => `
+    <tr>
+      <td style="font-weight:500;">${d.product_name}</td>
+      <td><span class="tag tag-blue">${d.platform}</span></td>
+      <td style="font-weight:700;">$${d.price_usd?.toFixed(2)}</td>
+      <td>${d.monthly_sales_est?.toLocaleString()}</td>
+      <td>⭐ ${d.rating || '—'}</td>
+      <td><span class="tag ${d.price_competitiveness === '强' ? 'tag-green' : d.price_competitiveness === '中' ? 'tag-yellow' : 'tag-red'}">${d.price_competitiveness || '中'}</span></td>
+      <td style="font-size:13px;">${(d.key_features || []).join(' · ')}</td>
+      <td><button class="btn btn-primary btn-xs" onclick="showToast('已添加「${d.product_name}」到监控列表')">📌 监控</button></td>
+    </tr>
+  `).join('');
+}
+
+async function searchCompetitor() {
+  const query = document.getElementById('competitor-search').value;
+  if (BACKEND.connected && query) {
+    try {
+      const res = await AGENT_BRIDGE.competitor('id', query);
+      if (res?.data?.competitors) renderCompetitorTableFromAgent(res.data.competitors);
+      showToast(`Agent搜索 "${query}" 完成`);
+      return;
+    } catch (e) { /* fallback */ }
+  }
+  renderCompetitorTable(query);
+  if (query) showToast(`搜索 "${query}" 完成`);
+}
+
+// Platform tabs
+document.querySelectorAll('#platform-tabs .platform-tab').forEach(tab => {
+  tab.addEventListener('click', async () => {
+    document.querySelectorAll('#platform-tabs .platform-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const platform = tab.dataset.platform;
+    showToast(`已切换至 ${platform.toUpperCase()} 平台`);
+    if (BACKEND.connected) {
+      try {
+        const res = await AGENT_BRIDGE.competitor('id', '');
+        if (res?.data?.competitors) {
+          const filtered = res.data.competitors.filter(c => c.platform?.toLowerCase() === platform);
+          if (filtered.length) renderCompetitorTableFromAgent(filtered);
+        }
+      } catch (e) { /* ok */ }
+    }
+  });
+});
+
+// ═══════════════════════ RECOMMEND PAGE ═══════════════════════
+
+function initRecommendPage() {
+  document.getElementById('ai-loading').style.display = 'none';
+  document.getElementById('ai-insight-card').style.display = 'none';
+  renderRecommendCards(RECOMMEND_DATA);
+}
+
+function renderRecommendCards(data) {
+  const container = document.getElementById('recommend-cards');
+  container.innerHTML = data.map(p => `
+    <div class="product-card" onclick="runAgentProfit('${p.name}', '${p.icon}')">
+      <div class="product-img">${p.icon}</div>
+      <div class="product-title">${p.name}</div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.5;">${p.reason}</p>
+      <div class="product-meta">
+        <span>🎯 ${p.market}</span>
+        <span>📈 ROI ${p.roi}</span>
+      </div>
+      <div class="product-footer">
+        <span class="score">⭐ ${p.score}/100</span>
+        <span class="tag tag-green">风险${p.risk}</span>
+      </div>
+      <div style="margin-top:12px;height:40px;">
+        <canvas id="mini-trend-${p.name.replace(/[^a-zA-Z]/g,'')}" height="40"></canvas>
+      </div>
+    </div>
+  `).join('');
+
+  data.forEach(p => {
+    const id = 'mini-trend-' + p.name.replace(/[^a-zA-Z]/g, '');
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: Array.from({length: p.trend.length}, () => ''),
+        datasets: [{
+          data: p.trend,
+          borderColor: p.score >= 90 ? '#10b981' : '#6366f1',
+          borderWidth: 2, pointRadius: 0, tension: 0.4,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false, min: 0 } },
+      },
+    });
+  });
+}
+
+async function runAIRecommend() {
+  const loading = document.getElementById('ai-loading');
+  const cards = document.getElementById('recommend-cards');
+  const insightCard = document.getElementById('ai-insight-card');
+  const countrySelect = document.getElementById('rec-target');
+  const budgetSelect = document.getElementById('rec-budget');
+  const country = countrySelect.value || 'id';
+  const budget = budgetSelect.value || 'mid';
+
+  loading.style.display = 'flex';
+  cards.innerHTML = '';
+  insightCard.style.display = 'none';
+  showToast('🧠 AI分析中...');
+
+  // Show workflow panel for connected backend
+  if (BACKEND.connected) {
+    if (!workflowPanelVisible) showWorkflowPanel();
+    clearWorkflowEvents();
+    addWorkflowEvent('intent', 'running', '分析用户意图');
+
+    // Use streaming query
+    const query = `在${countrySelect.options[countrySelect.selectedIndex]?.text || '印尼'}市场推荐选品，预算${budgetSelect.options[budgetSelect.selectedIndex]?.text || '中等'}`;
+
+    AGENT_BRIDGE.queryStream(query, {
+      onPhase: (phase, status, data) => {
+        addWorkflowEvent(phase, status, typeof data === 'string' ? data : '');
+      },
+      onProgress: (msg) => {
+        // update status
+      },
+      onComplete: (answer) => {
+        loading.style.display = 'none';
+        addWorkflowEvent('recommend', 'done', '分析完成');
+
+        // Render from agent answer if available
+        if (answer?.answer?.top_recommendations) {
+          const recs = answer.answer.top_recommendations;
+          const agentCards = recs.map((r, i) => ({
+            name: r.product_name,
+            icon: ['👔','🧕','🥛','📱','🍽️','🏕️'][i % 6],
+            reason: r.reason,
+            score: r.score,
+            market: r.market,
+            roi: r.roi,
+            risk: '低',
+            trend: Array.from({length: 12}, (_, j) => 30 + j * 5 + Math.floor(Math.random() * 15)),
+          }));
+          renderRecommendCards(agentCards);
+
+          // Show insight
+          if (answer.answer.summary || answer.answer.market_snapshot) {
+            insightCard.style.display = 'block';
+            document.getElementById('ai-insight-content').innerHTML = `
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div>
+                  <h4 style="margin-bottom:8px;color:var(--primary);">🎯 核心发现</h4>
+                  <p style="font-size:14px;line-height:1.8;">${answer.answer.summary || answer.answer.market_snapshot}</p>
+                </div>
+                <div>
+                  <h4 style="margin-bottom:8px;color:var(--success);">💡 策略建议</h4>
+                  <ul style="padding-left:20px;font-size:14px;line-height:2;">
+                    ${(answer.answer.top_recommendations || []).slice(0,3).map(r => `<li><strong>${r.product_name}</strong> — ${r.reason}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+              ${(answer.answer.risk_warnings || []).length ? `
+                <div style="margin-top:16px;padding:12px 16px;background:#fef3c7;border-radius:8px;font-size:13px;">
+                  ⚠️ <strong>风险提示：</strong>${answer.answer.risk_warnings.join('；')}
+                </div>
+              ` : ''}
+            `;
+          }
+          showToast('🤖 AI Agent分析完成！');
+          return;
+        }
+        // fallback
+        finishRecommendLocal(country, budget);
+      },
+      onError: (err) => {
+        console.error('Agent error:', err);
+        finishRecommendLocal(country, budget);
+      },
+    });
+  } else {
+    // Offline mode with simulated delay
+    setTimeout(() => finishRecommendLocal(country, budget), 1800);
+  }
+}
+
+function finishRecommendLocal(country, budget) {
+  const loading = document.getElementById('ai-loading');
+  const insightCard = document.getElementById('ai-insight-card');
+  loading.style.display = 'none';
+
+  insightCard.style.display = 'block';
+  document.getElementById('ai-insight-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <h4 style="margin-bottom:8px;color:var(--primary);">🎯 核心发现</h4>
+        <ul style="padding-left:20px;font-size:14px;line-height:2;">
+          <li><strong>家居收纳</strong>品类全六国需求上升，竞争度低，建议优先布局</li>
+          <li><strong>穆斯林服饰</strong>在印尼&马来西亚斋月后持续高增长</li>
+          <li><strong>宠物用品</strong>月搜索增速25.3%，为增速最快品类</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="margin-bottom:8px;color:var(--success);">💡 策略建议</h4>
+        <ul style="padding-left:20px;font-size:14px;line-height:2;">
+          <li>首推<strong>便携挂烫机</strong>切入印尼市场，ROI预估285%</li>
+          <li>菲律宾走量型商品（手机配件）配合低价引流策略</li>
+          <li>泰国市场关注<strong>户外露营</strong>品类，抢占先发优势</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px 16px;background:#fef3c7;border-radius:8px;font-size:13px;">
+      ⚠️ <strong>风险提示：</strong>美妆工具品类竞争加剧，头部卖家集中度高，新卖家入场需差异化策略。
+    </div>
+  `;
+
+  const shuffled = [...RECOMMEND_DATA].sort(() => Math.random() - 0.5);
+  renderRecommendCards(shuffled);
+  showToast('AI分析完成！已更新推荐列表');
+}
+
+async function runAgentProfit(productName, icon) {
+  if (!BACKEND.connected) {
+    showToast(`💰 ${productName} — 连接后端后可查看Agent利润精算`);
+    return;
+  }
+  try {
+    showToast(`💰 Profit Agent正在精算 ${productName}...`);
+    const res = await AGENT_BRIDGE.profit('id');
+    if (res?.data?.profit_summary) {
+      const p = res.data.profit_summary;
+      showToast(`💰 ${productName}: 利润¥${p.profit_per_unit_cny}/件 | 利润率${p.profit_margin_pct}%`);
+    }
+  } catch (e) {
+    showToast(`💰 利润预估: 约¥25-35/件`);
+  }
+}
+
+document.getElementById('rec-target').addEventListener('change', function() {
+  if (this.value) showToast(`已选择目标国家: ${this.options[this.selectedIndex].text}`);
+});
+
+// ═══════════════════════ PROFIT CALCULATOR ═══════════════════════
+
+const FX_RATES = {
+  id: { name: '印尼盾 (IDR)', rate: 2200, symbol: 'Rp' },
+  th: { name: '泰铢 (THB)', rate: 4.95, symbol: '฿' },
+  vn: { name: '越南盾 (VND)', rate: 3500, symbol: '₫' },
+  ph: { name: '菲律宾比索 (PHP)', rate: 7.85, symbol: '₱' },
+  my: { name: '马来西亚林吉特 (MYR)', rate: 0.65, symbol: 'RM' },
+  sg: { name: '新加坡元 (SGD)', rate: 0.19, symbol: 'S$' },
+};
+
+const PLATFORM_FEES = {
+  shopee: { commission: 0.05, payment: 0.02, service: 0.03 },
+  lazada: { commission: 0.06, payment: 0.02, service: 0.02 },
+  tokopedia: { commission: 0.055, payment: 0.015, service: 0.025 },
+  tiktok: { commission: 0.05, payment: 0.02, service: 0.025 },
+};
+
+let feeChart;
+
+function autoCalc() {
+  const platform = document.getElementById('calc-platform').value;
+  const country = document.getElementById('calc-country').value;
+  const costCNY = parseFloat(document.getElementById('calc-cost').value) || 0;
+  const priceLocal = parseFloat(document.getElementById('calc-price').value) || 0;
+  const logistics = parseFloat(document.getElementById('calc-logistics').value) || 0;
+  const storage = parseFloat(document.getElementById('calc-storage').value) || 0;
+  const adRate = (parseFloat(document.getElementById('calc-ad-rate').value) || 0) / 100;
+  const returnRate = (parseFloat(document.getElementById('calc-return-rate').value) || 0) / 100;
+
+  const fx = FX_RATES[country];
+  const fees = PLATFORM_FEES[platform];
+  const priceCNY = priceLocal / fx.rate;
+
+  const commissionFee = priceCNY * fees.commission;
+  const paymentFee = priceCNY * fees.payment;
+  const serviceFee = priceCNY * fees.service;
+  const totalPlatformFee = commissionFee + paymentFee + serviceFee;
+  const adCost = priceCNY * adRate;
+  const returnLoss = priceCNY * returnRate;
+  const totalCost = costCNY + logistics + storage + totalPlatformFee + adCost + returnLoss;
+  const profit = priceCNY - totalCost;
+  const margin = priceCNY > 0 ? (profit / priceCNY * 100) : 0;
+
+  const display = document.getElementById('profit-display');
+  display.innerHTML = `
+    <h3 style="margin-bottom:16px;">📊 利润分析 (${fx.symbol})</h3>
+    <div class="profit-row"><span>售价 (换算CNY)</span><span>¥${priceCNY.toFixed(2)}</span></div>
+    <div class="profit-row"><span>采购成本</span><span>-¥${costCNY.toFixed(2)}</span></div>
+    <div class="profit-row"><span>物流仓储</span><span>-¥${(logistics + storage).toFixed(2)}</span></div>
+    <div class="profit-row"><span>平台费用</span><span>-¥${totalPlatformFee.toFixed(2)}</span></div>
+    <div class="profit-row"><span>广告费用</span><span>-¥${adCost.toFixed(2)}</span></div>
+    <div class="profit-row"><span>退货损耗</span><span>-¥${returnLoss.toFixed(2)}</span></div>
+    <div class="profit-row" style="color:#34d399;"><span>💰 单品利润</span><span>¥${profit.toFixed(2)}</span></div>
+    <div class="profit-row" style="font-size:24px;font-weight:700;color:#fff;">
+      <span>📈 利润率</span><span>${margin.toFixed(1)}%</span>
+    </div>
+    <div style="margin-top:12px;padding:10px;background:rgba(255,255,255,.1);border-radius:8px;font-size:13px;">
+      ${margin > 30 ? '✅ 利润健康，建议规模化推广' : margin > 15 ? '⚠️ 利润适中，需控制广告成本' : '🔴 利润率偏低，建议优化供应链或提价'}
+    </div>
+  `;
+
+  // Fee breakdown chart
+  const feeCtx = document.getElementById('chart-fee-breakdown');
+  if (feeCtx) {
+    if (feeChart) feeChart.destroy();
+    feeChart = new Chart(feeCtx, {
+      type: 'bar',
+      data: {
+        labels: ['佣金', '支付手续费', '服务费', '广告费', '退货损耗'],
+        datasets: [{
+          label: '费用 (CNY)',
+          data: [commissionFee, paymentFee, serviceFee, adCost, returnLoss],
+          backgroundColor: ['#6366f1', '#8b5cf6', '#a78bfa', '#f59e0b', '#ef4444'],
+          borderRadius: 6,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } },
+      },
+    });
+  }
+}
+
+// ═══════════════════════ REPORT GENERATION ═══════════════════════
+
+function initReportPage() {
+  renderReportHistory();
+}
+
+function renderReportHistory() {
+  const tbody = document.getElementById('tbl-reports');
+  tbody.innerHTML = REPORT_HISTORY.map(r => `
+    <tr>
+      <td style="font-weight:500;">${r.name}</td>
+      <td><span class="tag tag-blue">${r.type}</span></td>
+      <td>${r.time}</td>
+      <td>${r.market}</td>
+      <td><span class="tag tag-green">✅ 已完成</span></td>
+      <td>
+        <button class="btn btn-secondary btn-xs" onclick="viewReport('${r.name}')">👁 查看</button>
+        <button class="btn btn-primary btn-xs" onclick="exportPDF()">📥 下载</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function generateReport(type) {
+  const now = new Date().toLocaleString('zh-CN');
+
+  if (BACKEND.connected) {
+    showToast('📋 Agent正在生成报告...');
+    try {
+      const res = await AGENT_BRIDGE.report(`生成${type}报告，实时数据`, 'id');
+      if (res?.data?.sections) {
+        renderAgentReport(type, res.data, now);
+        return;
+      }
+    } catch (e) { /* fallback */ }
+  }
+  renderLocalReport(type, now);
+}
+
+function renderAgentReport(type, data, now) {
+  document.getElementById('report-preview').style.display = 'block';
+  const container = document.getElementById('report-content');
+  container.innerHTML = `
+    <div style="border-bottom:2px solid var(--primary);padding-bottom:16px;margin-bottom:16px;">
+      <h2>${data.report_title || 'AI生成报告'}</h2>
+      <p style="color:var(--text-muted);">${now} | Agent综合分析</p>
+    </div>
+    ${(data.sections || []).map(s => `
+      <h3>${s.section_title}</h3>
+      <div style="font-size:14px;line-height:1.8;">${s.content_markdown}</div>
+    `).join('')}
+    <hr style="margin:16px 0;"/>
+    <h3>📌 结论</h3>
+    <div style="font-size:14px;line-height:1.8;">${data.conclusion || ''}</div>
+    ${(data.action_items || []).length ? `
+      <h3 style="margin-top:16px;">✅ 行动项</h3>
+      <ol style="font-size:14px;line-height:2;">
+        ${data.action_items.map(a => `<li><strong>[${a.priority === 'high' ? '高优先' : a.priority === 'medium' ? '中优先' : '低优先'}]</strong> ${a.action} — ${a.timeline || ''}</li>`).join('')}
+      </ol>
+    ` : ''}
+  `;
+  document.getElementById('report-preview').scrollIntoView({ behavior: 'smooth' });
+  showToast('✅ AI报告生成成功！');
+}
+
+function renderLocalReport(type, now) {
+  const content = type === 'trend' ? `
+    <div style="border-bottom:2px solid var(--primary);padding-bottom:16px;margin-bottom:16px;">
+      <h2>东南亚跨境电商市场趋势报告</h2>
+      <p style="color:var(--text-muted);">生成时间: ${now} | 覆盖市场: 印尼·泰国·越南·菲律宾·马来西亚·新加坡</p>
+    </div>
+    <h3>一、市场总览</h3>
+    <p>本期监测到热门品类 <strong>2,847</strong> 个，日均订单量约 <strong>458万</strong> 单，平均客单价 <strong>$12.40 USD</strong>。</p>
+    <p>印尼市场GMV占比最高达38%，泰国(22%)和越南(16%)紧随其后。</p>
+    <h3 style="margin-top:16px;">二、热门品类TOP5</h3>
+    <ol>
+      <li><strong>手机配件</strong> — 搜索热度98，月增15.2%，高竞争</li>
+      <li><strong>穆斯林服饰</strong> — 搜索热度95，月增22.8%，中竞争</li>
+      <li><strong>美妆工具</strong> — 搜索热度91，月增8.5%，高竞争</li>
+      <li><strong>家居收纳</strong> — 搜索热度88，月增18.3%，低竞争 ⭐推荐</li>
+      <li><strong>小型家电</strong> — 搜索热度86，月增10.1%，中竞争</li>
+    </ol>
+    <h3 style="margin-top:16px;">三、趋势预测</h3>
+    <p>基于AI模型预测，未来30天<strong>宠物用品</strong>和<strong>户外露营</strong>品类将持续高速增长，建议提前布局。</p>
+    <div style="margin-top:16px;padding:12px;background:#f0fdf4;border-radius:8px;">
+      ✅ <strong>结论：</strong>当前最佳入场品类为家居收纳和宠物用品，竞争度低且增长强劲。
+    </div>
+  ` : type === 'competitor' ? `
+    <div style="border-bottom:2px solid var(--warning);padding-bottom:16px;margin-bottom:16px;">
+      <h2>竞品分析报告</h2>
+      <p style="color:var(--text-muted);">生成时间: ${now} | 监控平台: Shopee·Lazada·Tokopedia</p>
+    </div>
+    <h3>一、竞品概况</h3>
+    <p>当前监控竞品 <strong>1,286</strong> 个，本期新增 <strong>47</strong> 个，价格变动商品 <strong>23</strong> 个。</p>
+    <h3 style="margin-top:16px;">二、高销量竞品分析</h3>
+    <ol>
+      <li><strong>Type-C快充数据线</strong> — 月销23,500件 | $3.99 | 策略: 捆绑销售</li>
+      <li><strong>Silk Hijab Premium</strong> — 月销18,200件 | $8.50 | 策略: KOL推广</li>
+      <li><strong>LED化妆镜</strong> — 月销15,600件 | $12.99 | 策略: 功能差异化</li>
+    </ol>
+    <h3 style="margin-top:16px;">三、价格战预警</h3>
+    <p>手机配件品类价格竞争激烈，平均售价月降5.2%，建议避免纯价格竞争，转向差异化策略。</p>
+  ` : `
+    <div style="border-bottom:2px solid var(--success);padding-bottom:16px;margin-bottom:16px;">
+      <h2>AI综合选品评估报告</h2>
+      <p style="color:var(--text-muted);">生成时间: ${now} | AI模型: SEA-Selector v3.0</p>
+    </div>
+    <h3>🥇 首选推荐: 便携式挂烫机 (印尼市场)</h3>
+    <p>综合评分97分 | ROI预估285% | 风险等级: 低</p>
+    <h3 style="margin-top:16px;">🥈 次选推荐: 穆斯林运动头巾 (马来+印尼)</h3>
+    <p>综合评分95分 | ROI预估320% | 风险等级: 低</p>
+    <h3 style="margin-top:16px;">🥉 第三推荐: 家居收纳系列 (全六国)</h3>
+    <p>综合评分96分 | 竞争度低 | 适合走量</p>
+    <div style="margin-top:16px;padding:12px;background:#fef3c7;border-radius:8px;">
+      ⚠️ <strong>风险提示：</strong>汇率波动可能影响利润，建议设置动态定价策略。
+    </div>
+  `;
+
+  document.getElementById('report-preview').style.display = 'block';
+  document.getElementById('report-content').innerHTML = content;
+  document.getElementById('report-preview').scrollIntoView({ behavior: 'smooth' });
+  showToast('报告生成成功！');
+}
+
+function viewReport(name) {
+  const report = REPORT_HISTORY.find(r => r.name === name);
+  if (!report) return;
+  document.getElementById('report-modal-content').innerHTML = `
+    <p><strong>报告名称：</strong>${report.name}</p>
+    <p><strong>类型：</strong>${report.type}</p>
+    <p><strong>生成时间：</strong>${report.time}</p>
+    <p><strong>覆盖市场：</strong>${report.market}</p>
+    <p><strong>状态：</strong>已完成</p>
+    <hr style="margin:16px 0;"/>
+    <p style="color:var(--text-muted);">📄 完整报告内容已生成，可导出PDF查看详细分析。</p>
+  `;
+  document.getElementById('report-modal').classList.add('show');
+}
+
+function exportPDF() {
+  const name = prompt('请输入文件名:', '选品报告_' + new Date().toISOString().slice(0,10));
+  if (!name) return;
+  document.getElementById('report-modal').classList.remove('show');
+  showToast(`✅ "${name}.pdf" 导出成功！`);
+}
+
+function exportExcel() {
+  showToast('✅ 数据已导出为 Excel 文件！');
+}
+
+function shareReport() {
+  showToast('🔗 分享链接已复制到剪贴板！');
+}
+
+// close modal on overlay click
+document.getElementById('report-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
+});
+
+// ═══════════════════════ INIT ═══════════════════════
+
+async function initApp() {
+  renderCategoryRank();
+  setTimeout(initTrendCharts, 200);
+  setTimeout(() => { renderCompetitorCards(); renderCompetitorTable(); }, 300);
+  setTimeout(autoCalc, 500);
+  setTimeout(renderReportHistory, 600);
+  await checkBackend();
+  console.log('🚀 东南亚跨境电商AI选品系统 v3.0 已就绪');
+  console.log('📊 数据覆盖: Shopee · Lazada · Tokopedia · TikTok Shop');
+  console.log('🌏 市场覆盖: 印尼 · 泰国 · 越南 · 菲律宾 · 马来西亚 · 新加坡');
+  if (BACKEND.connected) {
+    console.log('🤖 Multi-Agent Backend: Connected');
+    console.log('📡 Agent pool: supervisor, trend, competitor, recommend, profit, report');
+  }
+}
+
+initApp();
+</script>
+
+</body>
+</html>

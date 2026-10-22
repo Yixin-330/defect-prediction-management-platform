@@ -1,0 +1,97 @@
+{
+  "notice": "SYNTHETIC ONLY: labels are simulated, not SZZ; metrics do not measure real defect prediction.",
+  "decision_threshold": 0.5,
+  "threshold_note": "Fixed experiment threshold, not a product priority threshold.",
+  "splits": {
+    "train": {
+      "samples": 1400,
+      "positive": 434,
+      "negative": 966,
+      "from": "2025-01-01T00:00:00+00:00",
+      "to": "2025-02-28T07:00:00+00:00",
+      "effort_unaware": {
+        "roc_auc": 0.7824154907404758,
+        "average_precision": 0.604294627517999,
+        "precision_at_0_5": 0.6688963210702341,
+        "recall_at_0_5": 0.4608294930875576,
+        "f1_at_0_5": 0.5457025920873124,
+        "confusion_matrix_labels_0_1": [
+          [
+            867,
+            99
+          ],
+          [
+            234,
+            200
+          ]
+        ]
+      },
+      "effort_aware": {
+        "recall_at_20_percent_effort": 0.1497695852534562,
+        "actual_effort_fraction": 0.1993133937612685,
+        "inspected_commits": 89,
+        "ranking": "risk_score descending; whole-commit prefix within budget"
+      }
+    },
+    "validation": {
+      "samples": 300,
+      "positive": 89,
+      "negative": 211,
+      "from": "2025-02-28T08:00:00+00:00",
+      "to": "2025-03-12T19:00:00+00:00",
+      "effort_unaware": {
+        "roc_auc": 0.7576015762287662,
+        "average_precision": 0.5239875755459623,
+        "precision_at_0_5": 0.4927536231884058,
+        "recall_at_0_5": 0.38202247191011235,
+        "f1_at_0_5": 0.43037974683544306,
+        "confusion_matrix_labels_0_1": [
+          [
+            176,
+            35
+          ],
+          [
+            55,
+            34
+          ]
+        ]
+      },
+      "effort_aware": {
+        "recall_at_20_percent_effort": 0.20224719101123595,
+        "actual_effort_fraction": 0.19962240402769038,
+        "inspected_commits": 28,
+        "ranking": "risk_score descending; whole-commit prefix within budget"
+      }
+    },
+    "test": {
+      "samples": 300,
+      "positive": 97,
+      "negative": 203,
+      "from": "2025-03-12T20:00:00+00:00",
+      "to": "2025-03-25T07:00:00+00:00",
+      "effort_unaware": {
+        "roc_auc": 0.7960997409984256,
+        "average_precision": 0.651055719166928,
+        "precision_at_0_5": 0.6730769230769231,
+        "recall_at_0_5": 0.36082474226804123,
+        "f1_at_0_5": 0.4697986577181208,
+        "confusion_matrix_labels_0_1": [
+          [
+            186,
+            17
+          ],
+          [
+            62,
+            35
+          ]
+        ]
+      },
+      "effort_aware": {
+        "recall_at_20_percent_effort": 0.16494845360824742,
+        "actual_effort_fraction": 0.19443424627358838,
+        "inspected_commits": 19,
+        "ranking": "risk_score descending; whole-commit prefix within budget"
+      }
+    }
+  }
+}
