@@ -12,7 +12,7 @@ from git_parser import clone_and_parse_repo
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
-app = FastAPI()
+app = FastAPI(docs_url="/docs", redoc_url="/redoc")
 # 允许前端跨域访问（开发阶段配置，生产环境要收紧）
 app.add_middleware(
     CORSMiddleware,

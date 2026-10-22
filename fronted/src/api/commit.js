@@ -1,7 +1,7 @@
 import request from './request'
 
 export function getCommits(projectId, params) {
-  return request.get(`/projects/${projectId}/commits`, { params })
+  return request.get(`/projects/${projectId}/commits/`, { params })
 }
 
 export function getCommitDetail(projectId, commitId) {

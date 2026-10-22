@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getProjects, getCurrentProject } from '@/api/project'
+import { getProjects } from '@/api/project'
 
 export const useProjectStore = defineStore('project', () => {
   const projects = ref([])
@@ -11,7 +11,7 @@ export const useProjectStore = defineStore('project', () => {
     loading.value = true
     try {
       const res = await getProjects()
-      projects.value = res.data || []
+      projects.value = res.data || res || []
     } catch (e) {
       projects.value = []
     } finally {
@@ -19,18 +19,9 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
-  async function fetchCurrentProject() {
-    try {
-      const res = await getCurrentProject()
-      currentProject.value = res.data
-    } catch (e) {
-      currentProject.value = null
-    }
-  }
-
   function setCurrentProject(project) {
     currentProject.value = project
   }
 
-  return { projects, currentProject, loading, fetchProjects, fetchCurrentProject, setCurrentProject }
+  return { projects, currentProject, loading, fetchProjects, setCurrentProject }
 })

@@ -22,6 +22,34 @@ export function riskLevel(score) {
   return 'low'
 }
 
+export function levelFromBackend(level) {
+  const map = { '高': 'high', '中': 'mid', '低': 'low' }
+  return map[level] || 'none'
+}
+
+export function statusFromBackend(status) {
+  const map = { '待审查': 'waiting', '处理中': 'reviewing', '已处理': 'done', '已忽略': 'ignored' }
+  return map[status] || status
+}
+
+export function buildTrendFromCommits(commits) {
+  if (!commits || !commits.length) return []
+  const grouped = {}
+  for (const c of commits) {
+    const date = c.date ? c.date.slice(5, 10) : '未知'
+    if (!grouped[date]) grouped[date] = { date, high: 0, mid: 0, low: 0 }
+    const msg = (c.message || '').toLowerCase()
+    if (msg.includes('fix') || msg.includes('bug')) {
+      grouped[date].high++
+    } else if ((c.message || '').length < 10) {
+      grouped[date].mid++
+    } else {
+      grouped[date].low++
+    }
+  }
+  return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date))
+}
+
 export function riskLabel(level) {
   const map = { high: '高风险', mid: '中风险', low: '低风险', none: '无评分' }
   return map[level] || '无评分'

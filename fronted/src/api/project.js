@@ -1,37 +1,41 @@
 import request from './request'
 
 export function getProjects() {
-  return request.get('/projects')
-}
-
-export function getCurrentProject() {
-  return request.get('/projects/current')
+  return request.get('/projects/')
 }
 
 export function registerProject(data) {
-  return request.post('/projects', data)
+  return request.post('/projects/', data)
 }
 
-export function updateProjectConnection(projectId, data) {
-  return request.put(`/projects/${projectId}/connection`, data)
+export function getProject(projectId) {
+  return request.get(`/projects/${projectId}`)
 }
 
-export function verifyConnection(projectId) {
-  return request.post(`/projects/${projectId}/connection/verify`)
+export function getDashboardSummary() {
+  return request.get('/dashboard/summary')
 }
 
-export function disconnectProject(projectId) {
-  return request.delete(`/projects/${projectId}/connection`)
+export function getRiskRanking(projectId) {
+  return request.get(`/projects/${projectId}/risk-ranking`)
 }
 
-export function getSyncProgress(projectId) {
-  return request.get(`/projects/${projectId}/sync-progress`)
+export function getProjectPredictions(projectId) {
+  return request.get(`/projects/${projectId}/predictions`)
 }
 
-export function getProjectStats(projectId) {
-  return request.get(`/projects/${projectId}/stats`)
+export function cloneRepo(repoUrl) {
+  return request.post('/repos/clone', { repo_url: repoUrl })
 }
 
-export function getQualityTrend(projectId, params) {
-  return request.get(`/projects/${projectId}/quality-trend`, { params })
+export function cloneRepoAsync(repoUrl) {
+  return request.post('/repos/clone-async', { repo_url: repoUrl })
+}
+
+export function getTaskStatus(taskId) {
+  return request.get(`/tasks/${taskId}`)
+}
+
+export function getRepoCommits(repoId) {
+  return request.get(`/repos/${repoId}/commits`)
 }
