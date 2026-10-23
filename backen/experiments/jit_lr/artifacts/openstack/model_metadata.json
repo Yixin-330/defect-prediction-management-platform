@@ -1,0 +1,78 @@
+{
+  "feature_schema_version": "jitmovingtarget-source11-v1",
+  "feature_order": [
+    "la",
+    "ld",
+    "nf",
+    "nd",
+    "ns",
+    "ent",
+    "ndev",
+    "age",
+    "nuc",
+    "aexp",
+    "asexp"
+  ],
+  "seed": 42,
+  "parameters": {
+    "C": 1.0,
+    "class_weight": null,
+    "dual": false,
+    "fit_intercept": true,
+    "intercept_scaling": 1,
+    "l1_ratio": 0.0,
+    "max_iter": 5000,
+    "n_jobs": null,
+    "penalty": "deprecated",
+    "random_state": 42,
+    "solver": "lbfgs",
+    "tol": 0.0001,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "classification_threshold": 0.5,
+  "priority_thresholds": null,
+  "class_weight": null,
+  "preprocessing": "train-only median + train-observed missing indicators + StandardScaler",
+  "imputer_statistics": [
+    19.0,
+    4.0,
+    2.0,
+    2.0,
+    1.0,
+    0.6520236674085514,
+    19.0,
+    273947.0,
+    42.0,
+    88.0,
+    46.0
+  ],
+  "indicator_features": [
+    "ndev",
+    "age",
+    "nuc",
+    "aexp",
+    "asexp"
+  ],
+  "source_feature_units": {
+    "age": "unverified source unit (no conversion)",
+    "ent": "source bounded scale [0,1]"
+  },
+  "model_sha256": "b857c70c16628f7d53e0780c568ca2c8b746ce051a3cb49a7beb80b3aa0a2bc4",
+  "training_input_sha256": "5c35837fb98f5e123dd4851b4adbddc5d17f85029a2308a2f43eac62efc2bc89",
+  "versions": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0"
+  },
+  "limitations": [
+    "Offline archival benchmark only; not a production-ready 14-feature model.",
+    "Blank bugcount becomes negative by source convention, not proof of no defect.",
+    "Fix discovery dates and per-sample label availability are absent; historical label-time leakage cannot be ruled out.",
+    "age retains source numeric units; conversion to seconds/days has not been verified.",
+    "ent retains source bounded scale; no synthetic entropy or age conversion is applied.",
+    "CSV cannot independently establish extraction as-of timing or reproduce SZZ labels.",
+    "Missing history is unknown, not asserted to be zero history; train-only median imputation differs from source zero-fill."
+  ]
+}

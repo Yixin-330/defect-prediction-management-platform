@@ -1,0 +1,92 @@
+{
+  "version": "jitmovingtarget-source11-v1",
+  "feature_order": [
+    "la",
+    "ld",
+    "nf",
+    "nd",
+    "ns",
+    "ent",
+    "ndev",
+    "age",
+    "nuc",
+    "aexp",
+    "asexp"
+  ],
+  "fields": {
+    "la": {
+      "source": "la",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "ld": {
+      "source": "ld",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "nf": {
+      "source": "nf",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "nd": {
+      "source": "nd",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "ns": {
+      "source": "ns",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "ent": {
+      "source": "ent",
+      "unit": "source bounded entropy",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "ndev": {
+      "source": "ndev",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "age": {
+      "source": "age",
+      "unit": "source numeric time unit, unverified",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "nuc": {
+      "source": "nuc",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "aexp": {
+      "source": "aexp",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    },
+    "asexp": {
+      "source": "asexp",
+      "unit": "count",
+      "missing": "preserve blank; train-only median and indicator"
+    }
+  },
+  "excluded_from_X": [
+    "commit_id",
+    "author_date",
+    "bugcount",
+    "fixcount",
+    "fix_audit_only",
+    "label_was_blank",
+    "effort",
+    "rexp",
+    "arexp",
+    "lt",
+    "review metrics"
+  ],
+  "mapping_notes": {
+    "aexp": "author experience; do not map reviewer rexp to author recent experience",
+    "asexp": "author subsystem experience",
+    "arexp": "not used; relative/recent naming ambiguity not inferred",
+    "lt": "absent; never filled with fabricated zeros"
+  }
+}

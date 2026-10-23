@@ -1,0 +1,47 @@
+{
+  "project": "qt",
+  "source_file": "D:\\软件缺陷测试与预测\\data\\qt.csv",
+  "source_sha256": "656e6c1b3f06f2bab3329ae002bccdbbfd709b15f8b65cd2f070bbaa6713b48c",
+  "feature_schema_version": "jitmovingtarget-source11-v1",
+  "sources": [
+    "https://github.com/software-rebels/JITMovingTarget/blob/master/scripts/load_data.r",
+    "https://github.com/software-rebels/JITMovingTarget/blob/master/scripts/experimental_settings.r",
+    "https://posl.ait.kyushu-u.ac.jp/~kamei/publications/McIntosh_TSE2017.pdf"
+  ],
+  "audit": {
+    "raw_rows": 32155,
+    "retained_rows": 25150,
+    "excluded_rows": 7005,
+    "counts": {
+      "blank_bugcount_to_negative": 22430,
+      "blank_fixcount_to_false": 22584,
+      "rows_with_missing_features": 1345,
+      "no_added_lines": 2284,
+      "outside_source_time_window": 4566,
+      "source_ns_greater_than_nd_preserved": 444,
+      "churn_over_10000": 82,
+      "files_over_100": 73,
+      "entropy_roundoff_clipped": 7
+    }
+  },
+  "source_window_unix_start_inclusive_end_exclusive": [
+    1308350292,
+    1395090476
+  ],
+  "filter": "source window; la>0; la+ld<=10000; nf<=100",
+  "label": "int((bugcount or 0)>0), per source benchmark convention",
+  "label_cutoff_at": null,
+  "label_cutoff_note": "Not provided by CSV; not inferred from last commit date",
+  "split": "chronological approx 70/15/15, equal timestamps kept together",
+  "no_test_resampling": true,
+  "no_parameter_search": true,
+  "limitations": [
+    "Offline archival benchmark only; not a production-ready 14-feature model.",
+    "Blank bugcount becomes negative by source convention, not proof of no defect.",
+    "Fix discovery dates and per-sample label availability are absent; historical label-time leakage cannot be ruled out.",
+    "age retains source numeric units; conversion to seconds/days has not been verified.",
+    "ent retains source bounded scale; no synthetic entropy or age conversion is applied.",
+    "CSV cannot independently establish extraction as-of timing or reproduce SZZ labels.",
+    "Missing history is unknown, not asserted to be zero history; train-only median imputation differs from source zero-fill."
+  ]
+}

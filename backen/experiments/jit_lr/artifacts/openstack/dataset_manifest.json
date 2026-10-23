@@ -1,0 +1,46 @@
+{
+  "project": "openstack",
+  "source_file": "D:\\软件缺陷测试与预测\\data\\openstack.csv",
+  "source_sha256": "2b1d2128bee82e905b0233d6646c3fa88eed033e440482e2f89272a3dd436505",
+  "feature_schema_version": "jitmovingtarget-source11-v1",
+  "sources": [
+    "https://github.com/software-rebels/JITMovingTarget/blob/master/scripts/load_data.r",
+    "https://github.com/software-rebels/JITMovingTarget/blob/master/scripts/experimental_settings.r",
+    "https://posl.ait.kyushu-u.ac.jp/~kamei/publications/McIntosh_TSE2017.pdf"
+  ],
+  "audit": {
+    "raw_rows": 26855,
+    "retained_rows": 12374,
+    "excluded_rows": 14481,
+    "counts": {
+      "outside_source_time_window": 13646,
+      "blank_bugcount_to_negative": 9812,
+      "blank_fixcount_to_false": 11541,
+      "rows_with_missing_features": 344,
+      "no_added_lines": 812,
+      "files_over_100": 20,
+      "source_ns_greater_than_nd_preserved": 4,
+      "churn_over_10000": 3
+    }
+  },
+  "source_window_unix_start_inclusive_end_exclusive": [
+    1322599384,
+    1393590700
+  ],
+  "filter": "source window; la>0; la+ld<=10000; nf<=100",
+  "label": "int((bugcount or 0)>0), per source benchmark convention",
+  "label_cutoff_at": null,
+  "label_cutoff_note": "Not provided by CSV; not inferred from last commit date",
+  "split": "chronological approx 70/15/15, equal timestamps kept together",
+  "no_test_resampling": true,
+  "no_parameter_search": true,
+  "limitations": [
+    "Offline archival benchmark only; not a production-ready 14-feature model.",
+    "Blank bugcount becomes negative by source convention, not proof of no defect.",
+    "Fix discovery dates and per-sample label availability are absent; historical label-time leakage cannot be ruled out.",
+    "age retains source numeric units; conversion to seconds/days has not been verified.",
+    "ent retains source bounded scale; no synthetic entropy or age conversion is applied.",
+    "CSV cannot independently establish extraction as-of timing or reproduce SZZ labels.",
+    "Missing history is unknown, not asserted to be zero history; train-only median imputation differs from source zero-fill."
+  ]
+}

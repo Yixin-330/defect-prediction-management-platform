@@ -1,0 +1,116 @@
+{
+  "train": {
+    "rows": 8661,
+    "positive": 957,
+    "positive_fraction": 0.11049532386560443,
+    "from": "2011-11-29T20:43:04+00:00",
+    "to": "2013-08-09T16:06:04+00:00",
+    "missing_by_feature": {
+      "la": 0,
+      "ld": 0,
+      "nf": 0,
+      "nd": 0,
+      "ns": 0,
+      "ent": 0,
+      "ndev": 202,
+      "age": 202,
+      "nuc": 202,
+      "aexp": 202,
+      "asexp": 202
+    },
+    "roc_auc": 0.716148622328126,
+    "average_precision": 0.23327559594655206,
+    "precision_at_0_5": 0.3090909090909091,
+    "recall_at_0_5": 0.017763845350052248,
+    "f1_at_0_5": 0.03359683794466403,
+    "confusion_matrix_0_1": [
+      [
+        7666,
+        38
+      ],
+      [
+        940,
+        17
+      ]
+    ],
+    "recall_at_20_percent_effort": 0.03134796238244514,
+    "actual_effort_fraction": 0.19908701836680967,
+    "effort_ranking": "descending risk, stable ties, whole-commit prefix within budget"
+  },
+  "validation": {
+    "rows": 1856,
+    "positive": 373,
+    "positive_fraction": 0.2009698275862069,
+    "from": "2013-08-09T18:15:26+00:00",
+    "to": "2013-11-09T22:48:17+00:00",
+    "missing_by_feature": {
+      "la": 0,
+      "ld": 0,
+      "nf": 0,
+      "nd": 0,
+      "ns": 0,
+      "ent": 0,
+      "ndev": 68,
+      "age": 68,
+      "nuc": 68,
+      "aexp": 68,
+      "asexp": 68
+    },
+    "roc_auc": 0.7153078951983065,
+    "average_precision": 0.3804890547131279,
+    "precision_at_0_5": 0.5333333333333333,
+    "recall_at_0_5": 0.021447721179624665,
+    "f1_at_0_5": 0.041237113402061855,
+    "confusion_matrix_0_1": [
+      [
+        1476,
+        7
+      ],
+      [
+        365,
+        8
+      ]
+    ],
+    "recall_at_20_percent_effort": 0.029490616621983913,
+    "actual_effort_fraction": 0.1985906733620818,
+    "effort_ranking": "descending risk, stable ties, whole-commit prefix within budget"
+  },
+  "test": {
+    "rows": 1857,
+    "positive": 286,
+    "positive_fraction": 0.15401184706515886,
+    "from": "2013-11-10T07:48:10+00:00",
+    "to": "2014-02-28T12:31:39+00:00",
+    "missing_by_feature": {
+      "la": 0,
+      "ld": 0,
+      "nf": 0,
+      "nd": 0,
+      "ns": 0,
+      "ent": 0,
+      "ndev": 74,
+      "age": 74,
+      "nuc": 74,
+      "aexp": 74,
+      "asexp": 74
+    },
+    "roc_auc": 0.7160442994306776,
+    "average_precision": 0.3301344536319146,
+    "precision_at_0_5": 0.6363636363636364,
+    "recall_at_0_5": 0.024475524475524476,
+    "f1_at_0_5": 0.04713804713804714,
+    "confusion_matrix_0_1": [
+      [
+        1567,
+        4
+      ],
+      [
+        279,
+        7
+      ]
+    ],
+    "recall_at_20_percent_effort": 0.055944055944055944,
+    "actual_effort_fraction": 0.19985547003142576,
+    "effort_ranking": "descending risk, stable ties, whole-commit prefix within budget"
+  }
+}
