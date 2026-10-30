@@ -22,6 +22,19 @@ app.add_middleware(
     allow_headers=["*"],  # 允许所有请求头
 )
 
+# ========== 加载 B 同学的模型 ==========
+import joblib
+import numpy as np
+import os
+
+MODEL_PATH = "backen/experiments/synthetic_lr/artifacts/model.joblib"
+try:
+    ml_model = joblib.load(MODEL_PATH)
+    print("✅ 真实模型加载成功！")
+except Exception as e:
+    ml_model = None
+    print(f"⚠️ 模型加载失败，将使用 Mock 逻辑: {e}")
+
 # 定义“快递单”格式
 class ProjectCreate(BaseModel):
     name: str
@@ -37,12 +50,12 @@ def get_db():
     finally:
         db.close()
 
-# 1. 查所有学生
+# 1. 查所有项目
 @app.get("/projects/")
 def read_projects(db: Session = Depends(get_db)):
     return db.query(models.Project).all()
 
-# 2. 新增学生
+# 2. 新增项目
 @app.post("/projects/")
 def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
     db_project = models.Project(name=project.name, git_url=project.git_url, owner=project.owner,
@@ -170,7 +183,7 @@ def background_clone_and_save(repo_url: str, task_id: str):
         # 执行耗时的 Git 克隆
         commits_data = clone_and_parse_repo(repo_url)
         
-        # 存库逻辑（和你之前的一样）
+        # 存库逻辑
         repo_name = repo_url.rstrip("/").split("/")[-1].replace(".git", "")
         existing_repo = db.query(models.Repository).filter(models.Repository.url == repo_url).first()
         
@@ -237,7 +250,6 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
     total_projects = db.query(models.Project).count()
 
     # 4. 计算高风险数（Mock 规则：暂时把提交信息里包含 "fix" 或 "bug" 的算作高风险）
-    # 等 B 同学的模型上线后，这里换成从数据库读预测结果即可
     high_risk_commits = db.query(models.Commit).filter(
         models.Commit.message.ilike("%fix%") | models.Commit.message.ilike("%bug%")
     ).count()
@@ -282,7 +294,7 @@ def get_prediction(commit_id: int, db: Session = Depends(get_db)):
     if commit is None:
         raise HTTPException(status_code=404, detail="提交不存在")
 
-    # 先看数据库里有没有历史预测
+    # 1. 先看数据库里有没有历史预测
     existing = db.query(models.Prediction).filter(
         models.Prediction.commit_id == commit_id
     ).first()
@@ -296,20 +308,60 @@ def get_prediction(commit_id: int, db: Session = Depends(get_db)):
             explanation_available=bool(existing.explanation_available)
         )
 
-    # Mock 逻辑：等 B 的模型就绪后替换
-    if "fix" in commit.message.lower() or "bug" in commit.message.lower():
-        risk_score, level = 0.85, "高"
-    elif len(commit.message) < 10:
-        risk_score, level = 0.55, "中"
+    # 2. 如果模型加载成功了，走真实模型推理
+    if ml_model is not None:
+        # ⚠️ TODO: A同学做好真实特征提取后，把这里替换成从数据库读特征
+        # 目前为了联调，我们根据 commit 的信息生成模拟的 14 维特征
+        # 特征顺序: ns, nd, nf, entropy, la, ld, lt, fix, ndev, age, nuc, exp, rexp, sexp
+        is_fix = 1 if ("fix" in commit.message.lower() or "bug" in commit.message.lower()) else 0
+        mock_features = np.array([[
+            len(commit.message) % 5 + 1,  # ns (模拟修改子系统数)
+            len(commit.hash) % 10 + 1,    # nd (模拟修改目录数)
+            3,                            # nf (修改文件数)
+            1.5,                          # entropy (熵)
+            20,                           # la (增加行数)
+            10,                           # ld (删除行数)
+            30,                           # lt (总修改行数)
+            is_fix,                       # fix (是否是修复提交)
+            5,                            # ndev (开发者经验)
+            10.5,                         # age (文件年龄)
+            2,                            # nuc (近期修改次数)
+            100,                          # exp (开发者总提交数)
+            20.5,                         # rexp (近期提交数)
+            10                            # sexp (子系统经验)
+        ]])
+        
+        try:
+            # 模型返回的是一个数组，例如 [0.2959]，取第一个值
+            risk_score = float(ml_model.predict_proba(mock_features)[0][1])
+            model_id = "synthetic-logistic-regression-v1"
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"模型推理失败: {e}")
     else:
-        risk_score, level = 0.20, "低"
+        # 兜底 Mock 逻辑（如果模型加载失败）
+        if "fix" in commit.message.lower() or "bug" in commit.message.lower():
+            risk_score = 0.85
+        elif len(commit.message) < 10:
+            risk_score = 0.55
+        else:
+            risk_score = 0.20
+        model_id = "mock-v0.1"
 
+    # 3. 将分数映射为高/中/低
+    if risk_score >= 0.7:
+        level = "高"
+    elif risk_score >= 0.4:
+        level = "中"
+    else:
+        level = "低"
+
+    # 4. 存入数据库
     now = datetime.now()
     new_pred = models.Prediction(
         commit_id=commit_id,
         risk_score=risk_score,
         level=level,
-        model_id="mock-v0.1",
+        model_id=model_id,
         explanation_available=0,
         predicted_at=now
     )
@@ -321,11 +373,10 @@ def get_prediction(commit_id: int, db: Session = Depends(get_db)):
         commit_id=commit_id,
         risk_score=risk_score,
         level=level,
-        model_id="mock-v0.1",
+        model_id=model_id,
         predicted_at=now.isoformat(),
         explanation_available=False
     )
-
 
 # 新增：按项目查询历史预测（任务 4.5）
 @app.get("/projects/{project_id}/predictions")
