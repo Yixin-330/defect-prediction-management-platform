@@ -1,0 +1,154 @@
+{
+  "parameters": {
+    "max_depth": 6,
+    "min_samples_leaf": 30,
+    "class_weight": null
+  },
+  "threshold": 0.8627450980392157,
+  "trials": [
+    {
+      "max_depth": 2,
+      "min_samples_leaf": 5,
+      "class_weight": null,
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "max_depth": 2,
+      "min_samples_leaf": 5,
+      "class_weight": "balanced",
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "max_depth": 2,
+      "min_samples_leaf": 15,
+      "class_weight": null,
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "max_depth": 2,
+      "min_samples_leaf": 15,
+      "class_weight": "balanced",
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "max_depth": 2,
+      "min_samples_leaf": 30,
+      "class_weight": null,
+      "validation_ap": 0.7452576686005182
+    },
+    {
+      "max_depth": 2,
+      "min_samples_leaf": 30,
+      "class_weight": "balanced",
+      "validation_ap": 0.7452576686005182
+    },
+    {
+      "max_depth": 4,
+      "min_samples_leaf": 5,
+      "class_weight": null,
+      "validation_ap": 0.7346122569225165
+    },
+    {
+      "max_depth": 4,
+      "min_samples_leaf": 5,
+      "class_weight": "balanced",
+      "validation_ap": 0.736619036807911
+    },
+    {
+      "max_depth": 4,
+      "min_samples_leaf": 15,
+      "class_weight": null,
+      "validation_ap": 0.7443130483832487
+    },
+    {
+      "max_depth": 4,
+      "min_samples_leaf": 15,
+      "class_weight": "balanced",
+      "validation_ap": 0.7443130483832487
+    },
+    {
+      "max_depth": 4,
+      "min_samples_leaf": 30,
+      "class_weight": null,
+      "validation_ap": 0.8573039998383284
+    },
+    {
+      "max_depth": 4,
+      "min_samples_leaf": 30,
+      "class_weight": "balanced",
+      "validation_ap": 0.8573039998383284
+    },
+    {
+      "max_depth": 6,
+      "min_samples_leaf": 5,
+      "class_weight": null,
+      "validation_ap": 0.6989541885920401
+    },
+    {
+      "max_depth": 6,
+      "min_samples_leaf": 5,
+      "class_weight": "balanced",
+      "validation_ap": 0.7266127453914948
+    },
+    {
+      "max_depth": 6,
+      "min_samples_leaf": 15,
+      "class_weight": null,
+      "validation_ap": 0.7466241443253787
+    },
+    {
+      "max_depth": 6,
+      "min_samples_leaf": 15,
+      "class_weight": "balanced",
+      "validation_ap": 0.7466241443253787
+    },
+    {
+      "max_depth": 6,
+      "min_samples_leaf": 30,
+      "class_weight": null,
+      "validation_ap": 0.857418390138031
+    },
+    {
+      "max_depth": 6,
+      "min_samples_leaf": 30,
+      "class_weight": "balanced",
+      "validation_ap": 0.8573039998383284
+    },
+    {
+      "max_depth": null,
+      "min_samples_leaf": 5,
+      "class_weight": null,
+      "validation_ap": 0.6965663420487651
+    },
+    {
+      "max_depth": null,
+      "min_samples_leaf": 5,
+      "class_weight": "balanced",
+      "validation_ap": 0.7258902323230552
+    },
+    {
+      "max_depth": null,
+      "min_samples_leaf": 15,
+      "class_weight": null,
+      "validation_ap": 0.7439889808887798
+    },
+    {
+      "max_depth": null,
+      "min_samples_leaf": 15,
+      "class_weight": "balanced",
+      "validation_ap": 0.7439889808887798
+    },
+    {
+      "max_depth": null,
+      "min_samples_leaf": 30,
+      "class_weight": null,
+      "validation_ap": 0.857418390138031
+    },
+    {
+      "max_depth": null,
+      "min_samples_leaf": 30,
+      "class_weight": "balanced",
+      "validation_ap": 0.8573039998383284
+    }
+  ]
+}
