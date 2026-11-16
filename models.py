@@ -11,7 +11,7 @@ class Project(Base):
     description = Column(String, nullable=True) # 项目描述（可选）
     created_at = Column(DateTime, default=datetime.now)
 
-# 新增：仓库表
+# 仓库表
 class Repository(Base):
     __tablename__ = "repositories"
     id = Column(Integer, primary_key=True, index=True)
@@ -22,7 +22,7 @@ class Repository(Base):
     # 建立关系：一个仓库对应多个提交
     commits = relationship("Commit", back_populates="repository")
 
-# 新增：提交记录表
+# 提交记录表
 class Commit(Base):
     __tablename__ = "commits"
     id = Column(Integer, primary_key=True, index=True)
@@ -43,8 +43,8 @@ class Review(Base):
     status = Column(String, default="待审查")
     handler = Column(String)
     note = Column(String, nullable=True)
-    # 新增：创建时的风险评分（任务 5.5）
     risk_score_at_creation = Column(Float, nullable=True)
+    conclusion = Column(String, nullable=True) 
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 

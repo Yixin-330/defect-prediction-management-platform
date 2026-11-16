@@ -8,7 +8,7 @@ import uuid
 
 from database import SessionLocal, engine
 import models
-from git_parser import clone_and_parse_repo
+from git_parser import clone_and_parse_repo, get_commit_diff
 from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
@@ -425,6 +425,7 @@ class ReviewUpdate(BaseModel):
     status: str          # 只能是"处理中"、"已处理"、"已忽略"之一
     handler: Optional[str] = None
     note: Optional[str] = None
+    conclusion: Optional[str] = None
 
 # 允许的状态流转规则（D5）
 ALLOWED_TRANSITIONS = {
@@ -468,10 +469,22 @@ def create_review(review: ReviewCreate, db: Session = Depends(get_db)):
     return new_review
 
 @app.get("/reviews/")
-def list_reviews(status: Optional[str] = None, db: Session = Depends(get_db)):
-    query = db.query(models.Review)
+def list_reviews(
+    status: Optional[str] = None,
+    commit_id: Optional[int] = None,
+    repo_id: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
+    # 使用 join 关联 Commit 和 Repository 表，方便按 repo_id 过滤
+    query = db.query(models.Review).join(models.Commit, models.Review.commit_id == models.Commit.id)
+    
     if status:
         query = query.filter(models.Review.status == status)
+    if commit_id:
+        query = query.filter(models.Review.commit_id == commit_id)
+    if repo_id:
+        query = query.filter(models.Commit.repository_id == repo_id)
+        
     return query.all()
 
 @app.put("/reviews/{review_id}")
@@ -487,6 +500,15 @@ def update_review(review_id: int, review: ReviewUpdate, db: Session = Depends(ge
             status_code=400,
             detail=f"非法状态流转：'{db_review.status}' 不能变为 '{review.status}'。允许的流转：{allowed}"
         )
+    #必须提供合法的审查结论
+    if review.status == "已处理":
+        valid_conclusions = ["通过", "打回", "需要重构"]
+        if review.conclusion not in valid_conclusions:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"转为已处理状态必须提供合法的 conclusion: {valid_conclusions}"
+            )
+        db_review.conclusion = review.conclusion
 
     db_review.status = review.status
     if review.handler is not None:
@@ -506,3 +528,108 @@ def delete_review(review_id: int, db: Session = Depends(get_db)):
     db.delete(db_review)
     db.commit()
     return {"message": "删除成功"}
+
+@app.get("/commits/{commit_id}/diff")
+def read_commit_diff(commit_id: int, db: Session = Depends(get_db)):
+    commit = db.query(models.Commit).filter(models.Commit.id == commit_id).first()
+    if not commit:
+        raise HTTPException(status_code=404, detail="提交不存在")
+    repo = db.query(models.Repository).filter(models.Repository.id == commit.repository_id).first()
+    
+    # 调用函数
+    diff_text = get_commit_diff(repo.url, commit.hash)
+    return {"commit_id": commit_id, "hash": commit.hash, "diff": diff_text}
+
+@app.post("/repos/{repo_id}/batch-predict")
+def batch_predict(repo_id: int, db: Session = Depends(get_db)):
+    commits = db.query(models.Commit).filter(models.Commit.repository_id == repo_id).all()
+    if not commits:
+        raise HTTPException(status_code=404, detail="该仓库暂无提交记录")
+    
+    results = []
+    for commit in commits:
+        try:
+            pred = get_prediction(commit.id, db) 
+            results.append({"commit_id": commit.id, "risk_score": pred.risk_score, "level": pred.level})
+        except Exception:
+            continue
+            
+    return {"message": f"成功批量预测 {len(results)} 条记录", "data": results}
+
+class DatasetGenerateRequest(BaseModel):
+    repo_id: int
+    dataset_name: Optional[str] = "default_dataset"
+
+class ModelTrainRequest(BaseModel):
+    dataset_id: str
+    model_type: Optional[str] = "logistic_regression"
+    train_ratio: float = 0.7
+    val_ratio: float = 0.15
+    test_ratio: float = 0.15
+
+# 用于模拟后台耗时的函数
+def mock_generate_dataset_task(task_id: str, repo_id: int):
+    import time
+    task_status_db[task_id] = {"status": "processing", "message": "正在执行数据清洗与特征提取..."}
+    time.sleep(3)  # 模拟耗时3秒
+    # 模拟生成成功
+    task_status_db[task_id] = {
+        "status": "success", 
+        "message": "数据集生成成功", 
+        "dataset_id": f"ds_v1_repo{repo_id}" # 返回一个模拟的数据集版本号
+    }
+
+def mock_train_model_task(task_id: str, dataset_id: str, ratios: dict):
+    import time
+    task_status_db[task_id] = {"status": "processing", "message": f"正在使用数据集 {dataset_id} 训练模型..."}
+    time.sleep(5)  # 模拟训练耗时5秒
+    # 模拟训练成功，返回模型版本号和评估指标
+    task_status_db[task_id] = {
+        "status": "success", 
+        "message": "模型训练完成",
+        "model_id": "lr_model_v2",
+        "metrics": {
+            "accuracy": 0.88,
+            "f1_score": 0.82,
+            "auc": 0.91
+        }
+    }
+
+# 接口：生成数据集
+@app.post("/datasets/generate")
+def generate_dataset(request: DatasetGenerateRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # 先检查仓库是否存在
+    repo = db.query(models.Repository).filter(models.Repository.id == request.repo_id).first()
+    if not repo:
+        raise HTTPException(status_code=404, detail="仓库不存在，无法生成数据集")
+        
+    task_id = str(uuid.uuid4())
+    task_status_db[task_id] = {"status": "pending", "message": "数据集生成任务已排队"}
+    
+    # 放入后台执行
+    background_tasks.add_task(mock_generate_dataset_task, task_id, request.repo_id)
+    
+    return {
+        "task_id": task_id,
+        "message": "数据集生成任务已提交后台，请通过 /tasks/{task_id} 查询进度"
+    }
+
+# 接口：触发模型训练
+@app.post("/models/train")
+def train_model(request: ModelTrainRequest, background_tasks: BackgroundTasks):
+    # 校验划分比例之和是否为 1
+    total_ratio = request.train_ratio + request.val_ratio + request.test_ratio
+    if abs(total_ratio - 1.0) > 0.001:
+        raise HTTPException(status_code=400, detail="训练集、验证集、测试集的划分比例之和必须等于 1.0")
+
+    task_id = str(uuid.uuid4())
+    task_status_db[task_id] = {"status": "pending", "message": "模型训练任务已排队"}
+    
+    # 放入后台执行
+    ratios = {"train": request.train_ratio, "val": request.val_ratio, "test": request.test_ratio}
+    background_tasks.add_task(mock_train_model_task, task_id, request.dataset_id, ratios)
+    
+    return {
+        "task_id": task_id,
+        "message": "模型训练任务已提交后台，请通过 /tasks/{task_id} 查询进度"
+    }

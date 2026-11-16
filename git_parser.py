@@ -32,3 +32,20 @@ def clone_and_parse_repo(repo_url: str, local_dir: str = "./cloned_repos"):
             break
 
     return commits
+
+def get_commit_diff(repo_url: str, commit_hash: str):
+    repo_name = repo_url.rstrip("/").split("/")[-1].replace(".git", "")
+    repo_path = os.path.join("./cloned_repos", repo_name)
+    if not os.path.exists(repo_path):
+        return "仓库本地不存在，请先克隆"
+    try:
+        repo = Repo(repo_path)
+        commit = repo.commit(commit_hash)
+        # 获取该提交与其父提交的 diff
+        if commit.parents:
+            diff = commit.parents[0].diff(commit, create_patch=True)
+            # 返回第一个文件的 diff 文本内容
+            return diff[0].diff.decode('utf-8') if diff else "无差异内容"
+        return "初始提交，无父节点差异"
+    except Exception as e:
+        return f"获取 diff 失败: {str(e)}"
