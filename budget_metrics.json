@@ -1,0 +1,22 @@
+{
+  "budget": 900.6,
+  "positives": 27,
+  "rows": 102,
+  "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+  "results": {
+    "strict_prefix": {
+      "reviewed": 0,
+      "found": 0,
+      "spent": 0.0,
+      "recall": 0.0,
+      "skipped": 0
+    },
+    "skip_over_budget": {
+      "reviewed": 7,
+      "found": 4,
+      "spent": 900.0,
+      "recall": 0.14814814814814814,
+      "skipped": 95
+    }
+  }
+}

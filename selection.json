@@ -1,0 +1,47 @@
+{
+  "C": 10,
+  "class_weight": "balanced",
+  "threshold": 0.579160534810205,
+  "candidates": [
+    {
+      "C": 0.01,
+      "class_weight": null,
+      "validation_ap": 0.6747157032709075
+    },
+    {
+      "C": 0.01,
+      "class_weight": "balanced",
+      "validation_ap": 0.6725019720475351
+    },
+    {
+      "C": 0.1,
+      "class_weight": null,
+      "validation_ap": 0.6920927811070521
+    },
+    {
+      "C": 0.1,
+      "class_weight": "balanced",
+      "validation_ap": 0.6943789112475451
+    },
+    {
+      "C": 1,
+      "class_weight": null,
+      "validation_ap": 0.7302246934875257
+    },
+    {
+      "C": 1,
+      "class_weight": "balanced",
+      "validation_ap": 0.7327524259019379
+    },
+    {
+      "C": 10,
+      "class_weight": null,
+      "validation_ap": 0.7389147247276111
+    },
+    {
+      "C": 10,
+      "class_weight": "balanced",
+      "validation_ap": 0.7395901257499164
+    }
+  ]
+}

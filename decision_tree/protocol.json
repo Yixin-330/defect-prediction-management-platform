@@ -1,0 +1,43 @@
+{
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "contract_version": "jit14-v5-preliminary",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "features": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "preprocessing": "none",
+  "seed": 42,
+  "grid": {
+    "max_depth": [
+      2,
+      4,
+      6,
+      null
+    ],
+    "min_samples_leaf": [
+      5,
+      15,
+      30
+    ],
+    "class_weight": [
+      null,
+      "balanced"
+    ]
+  },
+  "selection": "validation AP; ties use first grid entry",
+  "threshold": "maximize validation F1; ties use highest threshold",
+  "test_evaluated": false
+}

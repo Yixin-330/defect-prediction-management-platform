@@ -1,0 +1,41 @@
+{
+  "samples": 101,
+  "positives": 44,
+  "roc_auc": 0.8929425837320575,
+  "ap": 0.857418390138031,
+  "precision": 0.7755102040816326,
+  "recall": 0.8636363636363636,
+  "f1": 0.8172043010752689,
+  "confusion_matrix": [
+    [
+      46,
+      11
+    ],
+    [
+      6,
+      38
+    ]
+  ],
+  "budget": {
+    "budget": 2242.2,
+    "positives": 44,
+    "rows": 101,
+    "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+    "results": {
+      "strict_prefix": {
+        "reviewed": 16,
+        "found": 15,
+        "spent": 1629.0,
+        "recall": 0.3409090909090909,
+        "skipped": 0
+      },
+      "skip_over_budget": {
+        "reviewed": 28,
+        "found": 22,
+        "spent": 2242.0,
+        "recall": 0.5,
+        "skipped": 73
+      }
+    }
+  }
+}

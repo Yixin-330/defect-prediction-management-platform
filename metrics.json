@@ -1,0 +1,40 @@
+{
+  "validation": {
+    "roc_auc": 0.8225677830940988,
+    "ap": 0.7395901257499164,
+    "precision": 0.7551020408163265,
+    "recall": 0.8409090909090909,
+    "f1": 0.7956989247311828,
+    "confusion_matrix": [
+      [
+        45,
+        12
+      ],
+      [
+        7,
+        37
+      ]
+    ],
+    "recall_at_20_percent_effort": 0.0,
+    "actual_effort_fraction": 0.0
+  },
+  "test": {
+    "roc_auc": 0.722469135802469,
+    "ap": 0.5094641465688942,
+    "precision": 0.39622641509433965,
+    "recall": 0.7777777777777778,
+    "f1": 0.525,
+    "confusion_matrix": [
+      [
+        43,
+        32
+      ],
+      [
+        6,
+        21
+      ]
+    ],
+    "recall_at_20_percent_effort": 0.0,
+    "actual_effort_fraction": 0.0
+  }
+}

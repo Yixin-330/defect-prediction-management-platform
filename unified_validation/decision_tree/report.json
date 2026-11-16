@@ -1,0 +1,267 @@
+{
+  "contract_version": "jit14-v5-preliminary",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "train_rows": 472,
+  "validation_rows": 101,
+  "test_evaluated": false,
+  "sklearn_version": "1.9.1",
+  "model": "decision_tree",
+  "parameters": {
+    "max_depth": 6,
+    "min_samples_leaf": 30,
+    "class_weight": null
+  },
+  "threshold": 0.8627450980392157,
+  "selection": "Highest validation AP; ties retain first candidate; threshold maximizes validation F1, highest threshold breaks ties.",
+  "trials": [
+    {
+      "parameters": {
+        "max_depth": 2,
+        "min_samples_leaf": 5,
+        "class_weight": null
+      },
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "parameters": {
+        "max_depth": 2,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "parameters": {
+        "max_depth": 2,
+        "min_samples_leaf": 15,
+        "class_weight": null
+      },
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "parameters": {
+        "max_depth": 2,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7409284295776517
+    },
+    {
+      "parameters": {
+        "max_depth": 2,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "validation_ap": 0.7452576686005182
+    },
+    {
+      "parameters": {
+        "max_depth": 2,
+        "min_samples_leaf": 30,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7452576686005182
+    },
+    {
+      "parameters": {
+        "max_depth": 4,
+        "min_samples_leaf": 5,
+        "class_weight": null
+      },
+      "validation_ap": 0.7346122569225165
+    },
+    {
+      "parameters": {
+        "max_depth": 4,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.736619036807911
+    },
+    {
+      "parameters": {
+        "max_depth": 4,
+        "min_samples_leaf": 15,
+        "class_weight": null
+      },
+      "validation_ap": 0.7443130483832487
+    },
+    {
+      "parameters": {
+        "max_depth": 4,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7443130483832487
+    },
+    {
+      "parameters": {
+        "max_depth": 4,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "validation_ap": 0.8573039998383284
+    },
+    {
+      "parameters": {
+        "max_depth": 4,
+        "min_samples_leaf": 30,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.8573039998383284
+    },
+    {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 5,
+        "class_weight": null
+      },
+      "validation_ap": 0.6989541885920401
+    },
+    {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7266127453914948
+    },
+    {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 15,
+        "class_weight": null
+      },
+      "validation_ap": 0.7466241443253787
+    },
+    {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7466241443253787
+    },
+    {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "validation_ap": 0.857418390138031
+    },
+    {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 30,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.8573039998383284
+    },
+    {
+      "parameters": {
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": null
+      },
+      "validation_ap": 0.6965663420487651
+    },
+    {
+      "parameters": {
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7258902323230552
+    },
+    {
+      "parameters": {
+        "max_depth": null,
+        "min_samples_leaf": 15,
+        "class_weight": null
+      },
+      "validation_ap": 0.7439889808887798
+    },
+    {
+      "parameters": {
+        "max_depth": null,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.7439889808887798
+    },
+    {
+      "parameters": {
+        "max_depth": null,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "validation_ap": 0.857418390138031
+    },
+    {
+      "parameters": {
+        "max_depth": null,
+        "min_samples_leaf": 30,
+        "class_weight": "balanced"
+      },
+      "validation_ap": 0.8573039998383284
+    }
+  ],
+  "metrics": {
+    "ap": 0.857418390138031,
+    "roc_auc": 0.8929425837320575,
+    "precision": 0.7755102040816326,
+    "recall": 0.8636363636363636,
+    "f1": 0.8172043010752689,
+    "confusion_matrix": [
+      [
+        46,
+        11
+      ],
+      [
+        6,
+        38
+      ]
+    ],
+    "budget": {
+      "budget": 2242.2,
+      "positives": 44,
+      "rows": 101,
+      "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+      "results": {
+        "strict_prefix": {
+          "reviewed": 16,
+          "found": 15,
+          "spent": 1629.0,
+          "recall": 0.3409090909090909,
+          "skipped": 0
+        },
+        "skip_over_budget": {
+          "reviewed": 28,
+          "found": 22,
+          "spent": 2242.0,
+          "recall": 0.5,
+          "skipped": 73
+        }
+      }
+    }
+  }
+}
