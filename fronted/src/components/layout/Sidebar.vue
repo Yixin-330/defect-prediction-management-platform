@@ -48,6 +48,9 @@ function isActive(path) {
 const navItems = [
   { path: '/', label: '项目工作台', icon: '◈' },
   { path: '/repo', label: '仓库接入', icon: '⬚' },
+  { path: '/dataset', label: '数据集与清洗', icon: '🗂' },
+  { path: '/train', label: '训练与模型库', icon: '🤖' },
+  { path: '/batch-predict', label: '批量预测与评估', icon: '⚡' },
   { path: '/commits', label: '提交风险列表', icon: '▤' },
   { path: '/reviews', label: '审查处理记录', icon: '✓' },
   { path: '/trend', label: '项目质量趋势', icon: '📈' }

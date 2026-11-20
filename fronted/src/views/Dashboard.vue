@@ -5,7 +5,12 @@
         <h1 class="page-title">项目工作台</h1>
         <p class="page-subtitle">把有限的审查资源，优先投入值得关注的代码变更。</p>
       </div>
-      <router-link to="/commits" class="btn btn-primary">→ 查看提交风险</router-link>
+      <div class="flex gap-12 items-center">
+        <select v-if="projects.length > 0" v-model="selectedProjectId" @change="loadData" class="project-select">
+          <option v-for="p in projects" :key="p.id" :value="p.id">{{ p.name }}</option>
+        </select>
+        <router-link to="/commits" class="btn btn-primary">→ 查看提交风险</router-link>
+      </div>
     </div>
 
     <LoadingState v-if="loading" text="正在加载看板数据..." />
@@ -34,7 +39,7 @@
         <StatCard :value="summary.total_commits || 0" label="已同步提交" :sub="`总仓库 ${summary.total_repos || 0}`" />
         <StatCard :value="summary.high_risk_commits || 0" label="高风险提交" sub="按风险分数优先安排" danger />
         <StatCard :value="summary.total_projects || 0" label="项目总数" sub="开发团队" primary />
-        <StatCard :value="summary.abnormal_commits || 0" label="异常提交" sub="低信息量提交" />
+        <StatCard :value="summary.abnormal_comits || 0" label="异常提交" sub="低信息量提交" />
       </div>
 
       <div class="two-col mt-24">
@@ -90,13 +95,16 @@ import LoadingState from '@/components/common/LoadingState.vue'
 import ErrorState from '@/components/common/ErrorState.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import RiskTrendChart from '@/components/charts/RiskTrendChart.vue'
-import { getDashboardSummary, getProjects, getRiskRanking } from '@/api/project'
-import { levelFromBackend, buildTrendFromCommits } from '@/utils/format'
+import { levelFromBackend, buildTrendFromCommits, buildTrendFromPredictions } from '@/utils/format'
+import { getRankingWithFallback } from '@/utils/dataSync'
+import { getProjectPredictions } from '@/api/project'
 
 const loading = ref(true)
 const error = ref(null)
 const summary = ref({})
 const project = ref(null)
+const projects = ref([])
+const selectedProjectId = ref(null)
 const rankingItems = ref([])
 
 const trendData = ref([])
@@ -112,20 +120,23 @@ async function loadData() {
   loading.value = true
   error.value = null
   try {
-    const [summaryRes, projectsRes] = await Promise.all([
-      getDashboardSummary(),
-      getProjects()
-    ])
-    summary.value = summaryRes
-    const projects = projectsRes || []
-    project.value = projects[0] || null
+    const { items, project: proj, summary: sum, projects: pros } = await getRankingWithFallback(selectedProjectId.value)
+    rankingItems.value = items
+    project.value = proj
+    summary.value = sum
+    projects.value = pros || []
+    if (proj && !selectedProjectId.value) selectedProjectId.value = proj.id
 
-    if (project.value) {
-      const ranking = await getRiskRanking(project.value.id)
-      rankingItems.value = ranking.items || []
+    if (proj) {
+      try {
+        const predData = await getProjectPredictions(proj.id)
+        trendData.value = buildTrendFromPredictions(predData.predictions)
+      } catch (e) {
+        trendData.value = buildTrendFromCommits(sum.recent_commits)
+      }
+    } else {
+      trendData.value = buildTrendFromCommits(sum.recent_commits)
     }
-
-    trendData.value = buildTrendFromCommits(summaryRes.recent_commits)
   } catch (e) {
     error.value = e.message || '加载失败'
   } finally {
@@ -138,6 +149,10 @@ onMounted(loadData)
 
 <style scoped>
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.project-select { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-primary); font-size: 14px; min-width: 160px; }
+.flex { display: flex; }
+.gap-12 { gap: 12px; }
+.items-center { align-items: center; }
 .project-info { padding: 20px; }
 .info-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .info-name { font-size: 18px; font-weight: 600; }

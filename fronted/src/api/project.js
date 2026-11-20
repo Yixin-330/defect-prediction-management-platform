@@ -39,3 +39,10 @@ export function getTaskStatus(taskId) {
 export function getRepoCommits(repoId) {
   return request.get(`/repos/${repoId}/commits`)
 }
+export function updateProject(projectId, data) {
+  return request.put(`/projects/${projectId}`, data)
+}
+
+export function deleteProject(projectId) {
+  return request.delete(`/projects/${projectId}`)
+}

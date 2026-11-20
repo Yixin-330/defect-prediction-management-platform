@@ -24,7 +24,11 @@
               <div class="meta-row"><span class="meta-label">风险分数</span><span>{{ prediction.risk_score?.toFixed(2) }}</span></div>
               <div class="meta-row"><span class="meta-label">风险等级</span><span>{{ prediction.level }}</span></div>
               <div class="meta-row"><span class="meta-label">预测模型</span><span>{{ prediction.model_id }}</span></div>
+              <div class="meta-row"><span class="meta-label">模型来源</span><span :style="isRealModel ? 'color:var(--color-success)' : 'color:var(--color-warning)'">{{ isRealModel ? '🤖 机器学习模型' : '📋 规则兜底' }}</span></div>
             </div>
+            <InfoAlert :type="isRealModel ? 'success' : 'warning'" class="mt-16">
+              {{ modelDescription }}
+            </InfoAlert>
           </div>
 
           <div class="form-body">
@@ -42,6 +46,10 @@
 
         <InfoAlert type="info">提交后将创建审查记录，状态为"待审查"。</InfoAlert>
 
+        <InfoAlert type="error" class="mt-16" v-if="submitError">
+          {{ submitError }}
+        </InfoAlert>
+
         <div class="form-actions mt-24">
           <button class="btn btn-secondary" @click="$router.back()">取消</button>
           <button class="btn btn-primary" :disabled="submitting" @click="handleSubmit">
@@ -54,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import InfoAlert from '@/components/common/InfoAlert.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
@@ -68,8 +76,21 @@ const commitId = route.params.id
 const loading = ref(true)
 const error = ref(null)
 const submitting = ref(false)
+const submitError = ref(null)
 const prediction = ref({})
 const form = ref({ handler: '', note: '' })
+
+const isRealModel = computed(() => {
+  const mid = prediction.value.model_id || ''
+  return mid.includes('synthetic') || mid.includes('logistic') || mid.includes('lr')
+})
+
+const modelDescription = computed(() => {
+  if (isRealModel.value) {
+    return '该预测由逻辑回归模型生成，基于14维变更特征计算风险概率。'
+  }
+  return '模型未加载，使用规则兜底判定风险等级。'
+})
 
 async function loadData() {
   loading.value = true
@@ -86,6 +107,7 @@ async function loadData() {
 async function handleSubmit() {
   if (!form.value.handler) return
   submitting.value = true
+  submitError.value = null
   try {
     await createReview({
       commit_id: parseInt(commitId),
@@ -94,7 +116,7 @@ async function handleSubmit() {
     })
     router.push('/reviews')
   } catch (e) {
-    error.value = e.message || '创建失败'
+    submitError.value = e.message || '创建失败，请检查输入后重试'
   } finally {
     submitting.value = false
   }

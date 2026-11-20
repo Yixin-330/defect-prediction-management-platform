@@ -26,8 +26,17 @@
 
     <div v-if="result" class="card p-20 mt-16">
       <div class="section-title mb-16">连接结果</div>
-      <InfoAlert type="success">{{ result.message }} · 共保存 {{ result.total_commits_saved }} 条提交记录</InfoAlert>
-      <router-link to="/commits" class="btn btn-primary mt-16">查看提交列表</router-link>
+      <InfoAlert :type="result.error ? 'error' : 'success'">{{ result.message }}</InfoAlert>
+      <div v-if="result.total_commits_saved" class="text-sm text-secondary mt-8">
+        共保存 {{ result.total_commits_saved }} 条提交记录
+      </div>
+      <div v-if="generating" class="text-sm text-secondary mt-8">
+        ⏳ 正在生成风险预测...（{{ generateProgress }}/{{ generateTotal }}）
+      </div>
+      <div v-if="generateDone" class="text-sm mt-8" style="color:var(--color-success)">
+        ✅ 已为 {{ generateDoneCount }} 条提交生成风险预测
+      </div>
+      <router-link v-if="generateDone" to="/commits" class="btn btn-primary mt-16">查看提交列表</router-link>
     </div>
 
     <div class="card p-20 mt-16">
@@ -55,20 +64,57 @@
 <script setup>
 import { ref } from 'vue'
 import InfoAlert from '@/components/common/InfoAlert.vue'
-import { cloneRepo } from '@/api/project'
+import { cloneRepo, getRepoCommits } from '@/api/project'
+import { getPrediction } from '@/api/prediction'
+import { ensureProject } from '@/utils/dataSync'
 
 const repoUrl = ref('')
 const submitting = ref(false)
 const result = ref(null)
+const generating = ref(false)
+const generateProgress = ref(0)
+const generateTotal = ref(0)
+const generateDone = ref(false)
+const generateDoneCount = ref(0)
 
 async function handleClone() {
   if (!repoUrl.value) return
   submitting.value = true
   result.value = null
+  generating.value = false
+  generateDone.value = false
   try {
-    result.value = await cloneRepo(repoUrl.value)
+    const cloneRes = await cloneRepo(repoUrl.value)
+    result.value = {
+      message: cloneRes.message || '仓库解析并保存成功',
+      total_commits_saved: cloneRes.total_commits_saved || 0,
+      error: false
+    }
+
+    const repoId = cloneRes.repository_id
+    if (repoId) {
+      generating.value = true
+      const repoData = await getRepoCommits(repoId)
+      const commits = repoData.commits || []
+      generateTotal.value = commits.length
+      generateProgress.value = 0
+      let count = 0
+      for (const commit of commits) {
+        try {
+          await getPrediction(commit.id)
+          count++
+        } catch (e) {
+          // skip
+        }
+        generateProgress.value++
+      }
+      generateDoneCount.value = count
+      generateDone.value = true
+      generating.value = false
+      await ensureProject(repoUrl.value)
+    }
   } catch (e) {
-    result.value = { message: e.message || '连接失败', total_commits_saved: 0 }
+    result.value = { message: e.message || '连接失败', error: true }
   } finally {
     submitting.value = false
   }

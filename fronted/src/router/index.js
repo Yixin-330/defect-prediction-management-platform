@@ -7,6 +7,10 @@ const routes = [
     children: [
       { path: '', name: 'dashboard', component: () => import('@/views/Dashboard.vue'), meta: { title: '项目工作台' } },
       { path: 'repo', name: 'repo', component: () => import('@/views/RepoConnect.vue'), meta: { title: '仓库接入' } },
+      { path: 'dataset', name: 'dataset', component: () => import('@/views/Dataset.vue'), meta: { title: '数据集与清洗' } },
+      { path: 'train', name: 'train', component: () => import('@/views/ModelTrain.vue'), meta: { title: '训练与模型库' } },
+      { path: 'batch-predict', name: 'batch-predict', component: () => import('@/views/BatchPredict.vue'), meta: { title: '批量预测与评估' } },
+
       { path: 'commits', name: 'commit-list', component: () => import('@/views/CommitRiskList.vue'), meta: { title: '提交风险列表' } },
       { path: 'commits/:id', name: 'commit-detail', component: () => import('@/views/CommitDetail.vue'), meta: { title: '提交详情与风险解释' } },
       { path: 'commits/:id/arrange', name: 'arrange-review', component: () => import('@/views/ArrangeReview.vue'), meta: { title: '安排代码审查' } },

@@ -32,6 +32,29 @@ export function statusFromBackend(status) {
   return map[status] || status
 }
 
+export function buildTrendFromBackend(riskTrend) {
+  if (!riskTrend || !riskTrend.length) return []
+  return riskTrend.map(item => ({
+    date: item.date ? item.date.slice(5, 10) : '未知',
+    high: item.risk_count || 0,
+    mid: 0,
+    low: 0
+  }))
+}
+
+export function buildTrendFromPredictions(predictions) {
+  if (!predictions || !predictions.length) return []
+  const grouped = {}
+  for (const p of predictions) {
+    const date = p.predicted_at ? p.predicted_at.slice(5, 10) : '未知'
+    if (!grouped[date]) grouped[date] = { date, high: 0, mid: 0, low: 0 }
+    if (p.level === '高') grouped[date].high++
+    else if (p.level === '中') grouped[date].mid++
+    else if (p.level === '低') grouped[date].low++
+  }
+  return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date))
+}
+
 export function buildTrendFromCommits(commits) {
   if (!commits || !commits.length) return []
   const grouped = {}
