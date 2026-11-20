@@ -1,0 +1,155 @@
+{
+  "contract_version": "jit14-v5-preliminary",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "train_rows": 472,
+  "validation_rows": 101,
+  "test_evaluated": false,
+  "sklearn_version": "1.9.1",
+  "model": "gaussian_nb",
+  "parameters": {
+    "transform": "log1p",
+    "var_smoothing": 1e-11,
+    "priors": "empirical"
+  },
+  "threshold": 0.9339913111987008,
+  "selection": "Highest validation AP; ties retain first candidate; threshold maximizes validation F1, highest threshold breaks ties.",
+  "trials": [
+    {
+      "parameters": {
+        "transform": "raw",
+        "var_smoothing": 1e-11,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7013608283612535
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "var_smoothing": 1e-09,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7013608283612535
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "var_smoothing": 1e-07,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7013608283612535
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "var_smoothing": 1e-05,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7013608283612535
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "var_smoothing": 0.001,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.6915955767330058
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 1e-11,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7022453663811501
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 1e-09,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7022453663811501
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 1e-07,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7022453663811501
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 1e-05,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7022453663811501
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 0.001,
+        "priors": "empirical"
+      },
+      "validation_ap": 0.7022453663811501
+    }
+  ],
+  "metrics": {
+    "ap": 0.7022453663811501,
+    "roc_auc": 0.8169856459330144,
+    "precision": 0.7142857142857143,
+    "recall": 0.9090909090909091,
+    "f1": 0.8,
+    "confusion_matrix": [
+      [
+        41,
+        16
+      ],
+      [
+        4,
+        40
+      ]
+    ],
+    "budget": {
+      "budget": 2242.2,
+      "positives": 44,
+      "rows": 101,
+      "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+      "results": {
+        "strict_prefix": {
+          "reviewed": 0,
+          "found": 0,
+          "spent": 0.0,
+          "recall": 0.0,
+          "skipped": 0
+        },
+        "skip_over_budget": {
+          "reviewed": 27,
+          "found": 18,
+          "spent": 2242.0,
+          "recall": 0.4090909090909091,
+          "skipped": 74
+        }
+      }
+    }
+  }
+}

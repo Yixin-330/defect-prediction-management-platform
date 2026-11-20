@@ -1,0 +1,143 @@
+{
+  "package_version": "jit-model-handoff-v1",
+  "status": "experimental",
+  "default_model": "logistic_regression",
+  "default_reason": "MVP first-chain integration baseline, not the best model claim",
+  "validation_selected_candidate": "random_forest",
+  "models": {
+    "logistic_regression": {
+      "version": "experiment-v1",
+      "artifact": "models/logistic_regression/model.joblib",
+      "sha256": "9e6964673ac6a90b5f186d262d263456c7e45c4633de56340f48fb13340e74ff",
+      "threshold": 0.7461506951740214,
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.01,
+        "class_weight": {
+          "0": 1,
+          "1": 2
+        }
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "decision_tree": {
+      "version": "experiment-v1",
+      "artifact": "models/decision_tree/model.joblib",
+      "sha256": "5966f59a4348d03fae05662f71cd2db66fc188a91e6fce7fdad6a08236161e18",
+      "threshold": 0.8627450980392157,
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "gaussian_nb": {
+      "version": "experiment-v1",
+      "artifact": "models/gaussian_nb/model.joblib",
+      "sha256": "8806515211449f3918eb8ad20a77b69accf7acf6aa123133dd4b114fa5f555f7",
+      "threshold": 0.9339913111987008,
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 1e-11,
+        "priors": "empirical"
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "knn": {
+      "version": "experiment-v1",
+      "artifact": "models/knn/model.joblib",
+      "sha256": "b2e7df499375afb4aa48d1395167f45ad584cd5fd43710bd6f9d082c97fd42c0",
+      "threshold": 0.5924752380502085,
+      "parameters": {
+        "transform": "log1p",
+        "n_neighbors": 5,
+        "weights": "distance",
+        "p": 1
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "rbf_svm": {
+      "version": "experiment-v1",
+      "artifact": "models/rbf_svm/model.joblib",
+      "sha256": "7c5018d2d3849105c148ed01663b68dc177106ad43920020118e9254bdc3c94f",
+      "threshold": 0.7819888468944174,
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "random_forest": {
+      "version": "experiment-v1",
+      "artifact": "models/random_forest/model.joblib",
+      "sha256": "f20e59515ba8e9684aa01e10043b8668f5abd297160fb3a080a8115e8e4a4338",
+      "threshold": 0.7113940844014373,
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "gradient_boosting": {
+      "version": "experiment-v1",
+      "artifact": "models/gradient_boosting/model.joblib",
+      "sha256": "a6b384c469766077a98fd49553a4256de65a78f31f535bffcbb89a4a5831a2e7",
+      "threshold": 0.7573404329670795,
+      "parameters": {
+        "n_estimators": 200,
+        "learning_rate": 0.03,
+        "max_depth": 1,
+        "min_samples_leaf": 10,
+        "subsample": 1.0
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    },
+    "deep_mlp": {
+      "version": "experiment-v1",
+      "artifact": "models/deep_mlp/model.joblib",
+      "sha256": "1bdeaeccaba91054f1348e237487cd88ab85399a3d536699fb107fe291789fb6",
+      "threshold": 0.9996450737267406,
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 0.1,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "feature_schema_version": "jit14-v5-preliminary"
+    }
+  },
+  "runtime": {
+    "numpy": "2.4.6",
+    "sklearn": "1.9.1",
+    "joblib": "1.6.0"
+  },
+  "python_version": "3.11.15",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "limitations": [
+    "The test set has already been inspected for the early LR baseline; this is not a pristine blind confirmation set.",
+    "675 samples, 27 test positives; small-sample uncertainty.",
+    "Feature extraction/SZZ provenance and label-time availability remain unverified.",
+    "Search budgets differ by model; extensive repeated validation selection.",
+    "MLP seed 42 configuration was selected on validation; other seeds were sensitivity checks."
+  ],
+  "explanation_available": false
+}

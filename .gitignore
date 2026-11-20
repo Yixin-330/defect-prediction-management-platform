@@ -21,3 +21,6 @@ cloned_repos/
 # 操作系统
 .DS_Store
 Thumbs.db
+# Local model environments and datasets
+.venv/
+data/local/

@@ -1,0 +1,74 @@
+{
+  "contract_version": "jit14-v5-preliminary",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "train_rows": 472,
+  "validation_rows": 101,
+  "test_evaluated": false,
+  "sklearn_version": "1.9.1",
+  "runs": [
+    {
+      "seed": 42,
+      "ap": 0.8638247016487257,
+      "roc_auc": 0.8907496012759171,
+      "f1_at_frozen_threshold": 0.8470588235294118,
+      "recall_at_20_percent_effort": 0.4318181818181818,
+      "n_iter": 1998,
+      "training_loss": 0.09992987503079696
+    },
+    {
+      "seed": 7,
+      "ap": 0.7889712297508109,
+      "roc_auc": 0.8425039872408293,
+      "f1_at_frozen_threshold": 0.7088607594936709,
+      "recall_at_20_percent_effort": 0.2727272727272727,
+      "n_iter": 2097,
+      "training_loss": 0.08355473344796416
+    },
+    {
+      "seed": 21,
+      "ap": 0.7375634759227668,
+      "roc_auc": 0.8106060606060606,
+      "f1_at_frozen_threshold": 0.7317073170731707,
+      "recall_at_20_percent_effort": 0.38636363636363635,
+      "n_iter": 2177,
+      "training_loss": 0.09224002140522909
+    }
+  ],
+  "summary": {
+    "ap": {
+      "mean": 0.7967864691074346,
+      "std_population": 0.051841313995090656
+    },
+    "roc_auc": {
+      "mean": 0.847953216374269,
+      "std_population": 0.032944573163489636
+    },
+    "f1_at_frozen_threshold": {
+      "mean": 0.7625423000320843,
+      "std_population": 0.06048566417680616
+    },
+    "recall_at_20_percent_effort": {
+      "mean": 0.3636363636363636,
+      "std_population": 0.06690727929036248
+    }
+  },
+  "note": "Configuration was selected on seed 42 validation results. Seeds 7/21 are sensitivity checks, not independent test estimates."
+}

@@ -1,0 +1,606 @@
+{
+  "contract_version": "jit14-v5-preliminary",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "train_rows": 472,
+  "validation_rows": 101,
+  "test_evaluated": false,
+  "sklearn_version": "1.9.1",
+  "model": "rbf_svm",
+  "parameters": {
+    "transform": "log1p",
+    "C": 0.1,
+    "gamma": "scale",
+    "class_weight": null,
+    "kernel": "rbf",
+    "probability": true
+  },
+  "threshold": 0.7819888468944174,
+  "selection": "Highest validation AP; ties retain first candidate; threshold maximizes validation F1, highest threshold breaks ties.",
+  "trials": [
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 0.1,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7094275685895988
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 0.1,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7153658811279364
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 0.1,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.753108453686477
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 0.1,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7423300610030736
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 0.1,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7077756023769564
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 0.1,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7199618517231599
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 1,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6661371478570017
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 1,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6502545818670976
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 1,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7544706799535005
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 1,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7211281990927154
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 1,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6502590313101768
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 1,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6363552451965431
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 10,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5793630895964138
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 10,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5763165716714621
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 10,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7421897512315782
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 10,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7226117138700104
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 10,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5638606058775057
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 10,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5590169874095405
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 100,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5650401418747024
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 100,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5609133913345539
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 100,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6803333836383315
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 100,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6688587306403357
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 100,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5471874446865606
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "C": 100,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.5492798741854994
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8806393151565084
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.871005486552338
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.788088496738474
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7909332052922657
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8768076426790559
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8736911400648927
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 1,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8427870753193949
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 1,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8205420424477526
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 1,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.813521827921994
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 1,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8148193372550774
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 1,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8567933866710478
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 1,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8299427205222015
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 10,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8096470325243352
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 10,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7728359210710394
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 10,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.805592924567824
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 10,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.80742270269091
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 10,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7151122143840474
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 10,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.7145731405215235
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 100,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6629936820606035
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 100,
+        "gamma": "scale",
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6660796591708263
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 100,
+        "gamma": 0.01,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.831362182372268
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 100,
+        "gamma": 0.01,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.8358036850975903
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 100,
+        "gamma": 0.1,
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6548457892580776
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "C": 100,
+        "gamma": 0.1,
+        "class_weight": "balanced",
+        "kernel": "rbf",
+        "probability": true
+      },
+      "validation_ap": 0.6462584240469574
+    }
+  ],
+  "metrics": {
+    "ap": 0.8806393151565084,
+    "roc_auc": 0.8943381180223285,
+    "precision": 0.868421052631579,
+    "recall": 0.75,
+    "f1": 0.8048780487804879,
+    "confusion_matrix": [
+      [
+        52,
+        5
+      ],
+      [
+        11,
+        33
+      ]
+    ],
+    "budget": {
+      "budget": 2242.2,
+      "positives": 44,
+      "rows": 101,
+      "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+      "results": {
+        "strict_prefix": {
+          "reviewed": 22,
+          "found": 20,
+          "spent": 2242.0,
+          "recall": 0.45454545454545453,
+          "skipped": 0
+        },
+        "skip_over_budget": {
+          "reviewed": 22,
+          "found": 20,
+          "spent": 2242.0,
+          "recall": 0.45454545454545453,
+          "skipped": 79
+        }
+      }
+    }
+  }
+}

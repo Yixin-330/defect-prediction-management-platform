@@ -1,0 +1,158 @@
+{
+  "frozen_at_utc": "2026-11-20T06:28:12.524748+00:00",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "candidates": {
+    "logistic_regression": {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.01,
+        "class_weight": {
+          "0": 1,
+          "1": 2
+        }
+      },
+      "threshold": 0.7461506951740214,
+      "model_sha256": "9e6964673ac6a90b5f186d262d263456c7e45c4633de56340f48fb13340e74ff",
+      "report_sha256": "53c120615dedc60c11e316d0c9cb956e4b9e4699683ca93cb4831ab5073ae319",
+      "validation_ap": 0.7963123303270715,
+      "validation_budget_recall": 0.29545454545454547
+    },
+    "decision_tree": {
+      "parameters": {
+        "max_depth": 6,
+        "min_samples_leaf": 30,
+        "class_weight": null
+      },
+      "threshold": 0.8627450980392157,
+      "model_sha256": "5966f59a4348d03fae05662f71cd2db66fc188a91e6fce7fdad6a08236161e18",
+      "report_sha256": "4e618d99ad7e6fb4520013894f8701502450378526ebebac7a4c1596d04e400d",
+      "validation_ap": 0.857418390138031,
+      "validation_budget_recall": 0.5
+    },
+    "gaussian_nb": {
+      "parameters": {
+        "transform": "log1p",
+        "var_smoothing": 1e-11,
+        "priors": "empirical"
+      },
+      "threshold": 0.9339913111987008,
+      "model_sha256": "8806515211449f3918eb8ad20a77b69accf7acf6aa123133dd4b114fa5f555f7",
+      "report_sha256": "c6c382c1a6449c55b05f325164a65d1cba7f8a5a17baacda022541486b815c3a",
+      "validation_ap": 0.7022453663811501,
+      "validation_budget_recall": 0.4090909090909091
+    },
+    "knn": {
+      "parameters": {
+        "transform": "log1p",
+        "n_neighbors": 5,
+        "weights": "distance",
+        "p": 1
+      },
+      "threshold": 0.5924752380502085,
+      "model_sha256": "b2e7df499375afb4aa48d1395167f45ad584cd5fd43710bd6f9d082c97fd42c0",
+      "report_sha256": "12c80248ff7c77d1d2e0c6a134295470350304070d1dd7e8d8d5b12436c5377f",
+      "validation_ap": 0.8703677484233237,
+      "validation_budget_recall": 0.3181818181818182
+    },
+    "rbf_svm": {
+      "parameters": {
+        "transform": "log1p",
+        "C": 0.1,
+        "gamma": "scale",
+        "class_weight": null,
+        "kernel": "rbf",
+        "probability": true
+      },
+      "threshold": 0.7819888468944174,
+      "model_sha256": "7c5018d2d3849105c148ed01663b68dc177106ad43920020118e9254bdc3c94f",
+      "report_sha256": "ff5e66f55e0a96dfab0a76eb7419f90d5dcaa05882ca30bd0146949a05506c9f",
+      "validation_ap": 0.8806393151565084,
+      "validation_budget_recall": 0.45454545454545453
+    },
+    "random_forest": {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "threshold": 0.7113940844014373,
+      "model_sha256": "f20e59515ba8e9684aa01e10043b8668f5abd297160fb3a080a8115e8e4a4338",
+      "report_sha256": "a04547eb125ab7595baf722a0a6a31b42b8c1646c4c147b8b620bd5f264eb6a8",
+      "validation_ap": 0.8836371356716423,
+      "validation_budget_recall": 0.5454545454545454
+    },
+    "gradient_boosting": {
+      "parameters": {
+        "n_estimators": 200,
+        "learning_rate": 0.03,
+        "max_depth": 1,
+        "min_samples_leaf": 10,
+        "subsample": 1.0
+      },
+      "threshold": 0.7573404329670795,
+      "model_sha256": "a6b384c469766077a98fd49553a4256de65a78f31f535bffcbb89a4a5831a2e7",
+      "report_sha256": "027471be12625efefc069891a9a7dec214c491d9beebd21a78226024c194739e",
+      "validation_ap": 0.8536008393979557,
+      "validation_budget_recall": 0.4772727272727273
+    },
+    "deep_mlp": {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 0.1,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "threshold": 0.9996450737267406,
+      "model_sha256": "1bdeaeccaba91054f1348e237487cd88ab85399a3d536699fb107fe291789fb6",
+      "report_sha256": "1d416637bf782112261bca04a455b54a2bb5ac9fa67f7567b9e7ca77a092a278",
+      "validation_ap": 0.8638247016487257,
+      "validation_budget_recall": 0.4318181818181818
+    }
+  },
+  "primary_candidate": "random_forest",
+  "selection": "Validation skip-over-budget recall, then validation AP; no test-driven reselection",
+  "ranking": "Risk descending, ties retain frozen split order; whole commits, 20% la+ld budget",
+  "thresholds": "Frozen per-model validation F1 threshold",
+  "no_retraining": true,
+  "limitations": [
+    "The test set has already been inspected for the early LR baseline; this is not a pristine blind confirmation set.",
+    "675 samples, 27 test positives; small-sample uncertainty.",
+    "Feature extraction/SZZ provenance and label-time availability remain unverified.",
+    "Search budgets differ by model; extensive repeated validation selection.",
+    "MLP seed 42 configuration was selected on validation; other seeds were sensitivity checks."
+  ],
+  "runtime": {
+    "numpy": "2.4.6",
+    "sklearn": "1.9.1",
+    "joblib": "1.6.0"
+  }
+}

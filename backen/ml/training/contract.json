@@ -1,0 +1,90 @@
+{
+  "version": "jit14-v5-preliminary",
+  "source": "feature_dataset(5).csv",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "features": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "label": "is_bug_inducing (0/1; use provided values unchanged)",
+  "excluded_inputs": [
+    "commit_hash",
+    "author",
+    "commit_time"
+  ],
+  "provenance": {
+    "sexp": "use provided values unchanged; multi-subsystem aggregation unverified",
+    "szz": "source links not supplied",
+    "label_cutoff_at": null
+  },
+  "split": {
+    "rule": "UTC chronological 70/15/15; keep equal timestamps together; SHA tie order",
+    "groups": {
+      "train": {
+        "rows": 472,
+        "positive": 205,
+        "first_utc": "2013-11-15T22:47:18+00:00",
+        "last_utc": "2022-02-22T15:33:02+00:00"
+      },
+      "validation": {
+        "rows": 101,
+        "positive": 44,
+        "first_utc": "2022-02-22T15:35:55+00:00",
+        "last_utc": "2023-07-31T20:04:03+00:00"
+      },
+      "test": {
+        "rows": 102,
+        "positive": 27,
+        "first_utc": "2023-07-31T20:05:09+00:00",
+        "last_utc": "2026-10-06T05:35:36+00:00"
+      }
+    }
+  },
+  "evaluation": {
+    "preprocessing": "StandardScaler fit on train only",
+    "seed": 42,
+    "solver": "lbfgs",
+    "max_iter": 5000,
+    "grid": {
+      "C": [
+        0.01,
+        0.1,
+        1,
+        10
+      ],
+      "class_weight": [
+        null,
+        "balanced"
+      ]
+    },
+    "configuration_selection": "highest validation AP; ties keep grid order",
+    "threshold_selection": "maximum validation F1; ties use highest threshold",
+    "effort": "la+ld; stable risk-descending prefix within 20% total changed lines",
+    "metrics": [
+      "ROC-AUC",
+      "AP",
+      "precision",
+      "recall",
+      "F1",
+      "confusion matrix",
+      "Recall@20% effort"
+    ]
+  },
+  "runtime": {
+    "numpy": "2.4.6",
+    "scikit_learn": "1.9.1",
+    "joblib": "1.6.0"
+  }
+}

@@ -1,0 +1,237 @@
+{
+  "contract_version": "jit14-v5-preliminary",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "train_rows": 472,
+  "validation_rows": 101,
+  "test_evaluated": false,
+  "sklearn_version": "1.9.1",
+  "model": "random_forest",
+  "parameters": {
+    "n_estimators": 300,
+    "max_depth": null,
+    "min_samples_leaf": 5,
+    "class_weight": null,
+    "max_features": "sqrt"
+  },
+  "threshold": 0.7113940844014373,
+  "selection": "Highest validation AP; ties retain first candidate; threshold maximizes validation F1, highest threshold breaks ties.",
+  "trials": [
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "min_samples_leaf": 5,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8489334442852939
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.839061001266125
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "min_samples_leaf": 15,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8489094473473963
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.842911763663025
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8799254418921512
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8462467081215859
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": null,
+        "min_samples_leaf": 15,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8384944196967306
+    },
+    {
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": null,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.846385296272979
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": 4,
+        "min_samples_leaf": 5,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8558903939887677
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": 4,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8492745651311515
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": 4,
+        "min_samples_leaf": 15,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8434502065083245
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": 4,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8412465518536505
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8836371356716423
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": null,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8574586614934204
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": null,
+        "min_samples_leaf": 15,
+        "class_weight": null,
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.8412986337142401
+    },
+    {
+      "parameters": {
+        "n_estimators": 300,
+        "max_depth": null,
+        "min_samples_leaf": 15,
+        "class_weight": "balanced",
+        "max_features": "sqrt"
+      },
+      "validation_ap": 0.839632284978511
+    }
+  ],
+  "metrics": {
+    "ap": 0.8836371356716423,
+    "roc_auc": 0.8987240829346093,
+    "precision": 0.8571428571428571,
+    "recall": 0.8181818181818182,
+    "f1": 0.8372093023255814,
+    "confusion_matrix": [
+      [
+        51,
+        6
+      ],
+      [
+        8,
+        36
+      ]
+    ],
+    "budget": {
+      "budget": 2242.2,
+      "positives": 44,
+      "rows": 101,
+      "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+      "results": {
+        "strict_prefix": {
+          "reviewed": 23,
+          "found": 22,
+          "spent": 1978.0,
+          "recall": 0.5,
+          "skipped": 0
+        },
+        "skip_over_budget": {
+          "reviewed": 29,
+          "found": 24,
+          "spent": 2242.0,
+          "recall": 0.5454545454545454,
+          "skipped": 72
+        }
+      }
+    }
+  }
+}

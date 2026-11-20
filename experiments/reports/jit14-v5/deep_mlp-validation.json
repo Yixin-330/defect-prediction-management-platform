@@ -1,0 +1,320 @@
+{
+  "contract_version": "jit14-v5-preliminary",
+  "source_sha256": "833e016630cbc09d042f45597f4c4f3241d47162cfe16c7c3ab7be569943e198",
+  "splits_sha256": "043fefae4e697eee9d117385878e4a17be71bd59e30202922671ad0f426001db",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "seed": 42,
+  "train_rows": 472,
+  "validation_rows": 101,
+  "test_evaluated": false,
+  "sklearn_version": "1.9.1",
+  "model": "deep_mlp",
+  "parameters": {
+    "transform": "log1p",
+    "hidden_layer_sizes": [
+      32,
+      16
+    ],
+    "alpha": 0.1,
+    "activation": "relu",
+    "solver": "adam",
+    "learning_rate_init": 0.001,
+    "max_iter": 3000,
+    "early_stopping": false,
+    "n_iter_no_change": 30,
+    "tol": 0.0001,
+    "random_state": 42
+  },
+  "threshold": 0.9996450737267406,
+  "selection": "Highest validation AP; ties retain first candidate; threshold maximizes validation F1, highest threshold breaks ties.",
+  "trials": [
+    {
+      "parameters": {
+        "transform": "raw",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 0.01,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.7407431925945773
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 0.1,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.6989133324441245
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 1.0,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.6682930675454378
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "hidden_layer_sizes": [
+          64,
+          32,
+          16
+        ],
+        "alpha": 0.01,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.6858338189912013
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "hidden_layer_sizes": [
+          64,
+          32,
+          16
+        ],
+        "alpha": 0.1,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.7133139409008874
+    },
+    {
+      "parameters": {
+        "transform": "raw",
+        "hidden_layer_sizes": [
+          64,
+          32,
+          16
+        ],
+        "alpha": 1.0,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.699885241272797
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 0.01,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.802482477388328
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 0.1,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.8638247016487257
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          32,
+          16
+        ],
+        "alpha": 1.0,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.7839711533119971
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          64,
+          32,
+          16
+        ],
+        "alpha": 0.01,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.8348565684209526
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          64,
+          32,
+          16
+        ],
+        "alpha": 0.1,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.813383897942883
+    },
+    {
+      "parameters": {
+        "transform": "log1p",
+        "hidden_layer_sizes": [
+          64,
+          32,
+          16
+        ],
+        "alpha": 1.0,
+        "activation": "relu",
+        "solver": "adam",
+        "learning_rate_init": 0.001,
+        "max_iter": 3000,
+        "early_stopping": false,
+        "n_iter_no_change": 30,
+        "tol": 0.0001,
+        "random_state": 42
+      },
+      "validation_ap": 0.8315942972662578
+    }
+  ],
+  "metrics": {
+    "ap": 0.8638247016487257,
+    "roc_auc": 0.8907496012759171,
+    "precision": 0.8780487804878049,
+    "recall": 0.8181818181818182,
+    "f1": 0.8470588235294118,
+    "confusion_matrix": [
+      [
+        52,
+        5
+      ],
+      [
+        8,
+        36
+      ]
+    ],
+    "budget": {
+      "budget": 2242.2,
+      "positives": 44,
+      "rows": 101,
+      "rule": "Stable descending score; whole commits; skip if cost exceeds remaining budget and continue.",
+      "results": {
+        "strict_prefix": {
+          "reviewed": 5,
+          "found": 5,
+          "spent": 790.0,
+          "recall": 0.11363636363636363,
+          "skipped": 0
+        },
+        "skip_over_budget": {
+          "reviewed": 22,
+          "found": 19,
+          "spent": 2242.0,
+          "recall": 0.4318181818181818,
+          "skipped": 79
+        }
+      }
+    }
+  }
+}
