@@ -1,0 +1,45 @@
+{
+  "package_version": "jit-model-handoff-v1",
+  "model_id": "logistic_regression",
+  "total": 2,
+  "successful": 2,
+  "failed": 0,
+  "results": [
+    {
+      "index": 0,
+      "status": "success",
+      "project_id": "integration-demo",
+      "commit_sha": "a35896e9a1690730524c68d689ff1fde269d797a",
+      "model_id": "logistic_regression",
+      "model_version": "experiment-v1",
+      "feature_schema_version": "jit14-v5-preliminary",
+      "risk_score": 0.8267115828589001,
+      "threshold": 0.7461506951740214,
+      "predicted_label": 1,
+      "explanation": {
+        "available": false,
+        "method": null,
+        "contributions": null,
+        "reason": "Explanation/SHAP not implemented in this package"
+      }
+    },
+    {
+      "index": 1,
+      "status": "success",
+      "project_id": "integration-demo",
+      "commit_sha": "b26bd030dd64b7dcc60f746cccabf4270362ac14",
+      "model_id": "logistic_regression",
+      "model_version": "experiment-v1",
+      "feature_schema_version": "jit14-v5-preliminary",
+      "risk_score": 0.7773094261284628,
+      "threshold": 0.7461506951740214,
+      "predicted_label": 1,
+      "explanation": {
+        "available": false,
+        "method": null,
+        "contributions": null,
+        "reason": "Explanation/SHAP not implemented in this package"
+      }
+    }
+  ]
+}

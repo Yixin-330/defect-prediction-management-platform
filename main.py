@@ -286,7 +286,8 @@ class PredictionResponse(BaseModel):
     model_id: str
     predicted_at: str
     explanation_available: bool
-
+    # ========== 放特征解释列表 ========
+    explanation: Optional[list] = None 
 
 @app.get("/predictions/{commit_id}", response_model=PredictionResponse)
 def get_prediction(commit_id: int, db: Session = Depends(get_db)):
@@ -310,8 +311,6 @@ def get_prediction(commit_id: int, db: Session = Depends(get_db)):
 
     # 2. 如果模型加载成功了，走真实模型推理
     if ml_model is not None:
-        # ⚠️ TODO: A同学做好真实特征提取后，把这里替换成从数据库读特征
-        # 目前为了联调，我们根据 commit 的信息生成模拟的 14 维特征
         # 特征顺序: ns, nd, nf, entropy, la, ld, lt, fix, ndev, age, nuc, exp, rexp, sexp
         is_fix = 1 if ("fix" in commit.message.lower() or "bug" in commit.message.lower()) else 0
         mock_features = np.array([[
@@ -336,16 +335,11 @@ def get_prediction(commit_id: int, db: Session = Depends(get_db)):
             risk_score = float(ml_model.predict_proba(mock_features)[0][1])
             model_id = "synthetic-logistic-regression-v1"
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"模型推理失败: {e}")
+            raise HTTPException(status_code=500, detail=f"特征提取或模型推理失败: {str(e)}")
+
     else:
-        # 兜底 Mock 逻辑（如果模型加载失败）
-        if "fix" in commit.message.lower() or "bug" in commit.message.lower():
-            risk_score = 0.85
-        elif len(commit.message) < 10:
-            risk_score = 0.55
-        else:
-            risk_score = 0.20
-        model_id = "mock-v0.1"
+        # 规范 4.2 要求：模型无法加载时，直接返回明确错误，不返回风险评分
+        raise HTTPException(status_code=503, detail="模型不可用，请联系管理员检查模型文件")
 
     # 3. 将分数映射为高/中/低
     if risk_score >= 0.7:

@@ -1,0 +1,45 @@
+{
+  "feature_schema_version": "jit14-v5-preliminary",
+  "records": [
+    {
+      "project_id": "integration-demo",
+      "commit_sha": "a35896e9a1690730524c68d689ff1fde269d797a",
+      "features": {
+        "ns": 2.0,
+        "nd": 2.0,
+        "nf": 3.0,
+        "entropy": 0.9856,
+        "la": 46.0,
+        "ld": 1.0,
+        "lt": 3214.0,
+        "fix": 1.0,
+        "ndev": 9.0,
+        "age": 15.02,
+        "nuc": 163.0,
+        "exp": 63.0,
+        "rexp": 53.05,
+        "sexp": 86.0
+      }
+    },
+    {
+      "project_id": "integration-demo",
+      "commit_sha": "b26bd030dd64b7dcc60f746cccabf4270362ac14",
+      "features": {
+        "ns": 1.0,
+        "nd": 1.0,
+        "nf": 2.0,
+        "entropy": 0.8631,
+        "la": 7.0,
+        "ld": 0.0,
+        "lt": 2931.0,
+        "fix": 1.0,
+        "ndev": 9.0,
+        "age": 10.04,
+        "nuc": 86.0,
+        "exp": 0.0,
+        "rexp": 0.0,
+        "sexp": 0.0
+      }
+    }
+  ]
+}

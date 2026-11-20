@@ -1,0 +1,106 @@
+{
+  "version": "jit14-v5-preliminary",
+  "feature_order": [
+    "ns",
+    "nd",
+    "nf",
+    "entropy",
+    "la",
+    "ld",
+    "lt",
+    "fix",
+    "ndev",
+    "age",
+    "nuc",
+    "exp",
+    "rexp",
+    "sexp"
+  ],
+  "fields": {
+    "ns": {
+      "description": "子系统数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "nd": {
+      "description": "目录数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "nf": {
+      "description": "文件数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "entropy": {
+      "description": "未归一化熵（源数据口径待代码验收）",
+      "integer": false,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "la": {
+      "description": "新增行数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "ld": {
+      "description": "删除行数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "lt": {
+      "description": "变更前文件行数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "fix": {
+      "description": "修复标记",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "ndev": {
+      "description": "历史开发者数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "age": {
+      "description": "文件历史年龄（单位待核验）",
+      "integer": false,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "nuc": {
+      "description": "历史提交数",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "exp": {
+      "description": "作者经验",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "rexp": {
+      "description": "作者近期经验",
+      "integer": false,
+      "missing": "reject",
+      "minimum": 0
+    },
+    "sexp": {
+      "description": "作者子系统经验（聚合待核验）",
+      "integer": true,
+      "missing": "reject",
+      "minimum": 0
+    }
+  },
+  "notice": "Matching field names do not prove extraction semantics. Do not send previously standardized features; the artifact contains fitted preprocessing."
+}

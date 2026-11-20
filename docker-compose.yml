@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    container_name: jit_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # 挂载数据库和克隆目录，实现数据持久化
+      - ./sql_app.db:/app/sql_app.db
+      - ./cloned_repos:/app/cloned_repos
+    restart: always
