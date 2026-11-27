@@ -1,5 +1,8 @@
 import os
-from git import Repo
+import logging
+from git import Repo, GitCommandError
+
+logger = logging.getLogger(__name__)
 
 def clone_and_parse_repo(repo_url: str, local_dir: str = "./cloned_repos"):
     # 1. 确保本地存放仓库的文件夹存在
@@ -12,8 +15,11 @@ def clone_and_parse_repo(repo_url: str, local_dir: str = "./cloned_repos"):
     # 3. 如果本地已经有这个仓库了，就拉取更新；没有就克隆
     if os.path.exists(repo_path):
         repo = Repo(repo_path)
-        origin = repo.remotes.origin
-        origin.pull()
+        # 本地已有仓库：尝试 pull 更新，失败则降级使用本地版本，避免网络问题阻断解析
+        try:
+            repo.remotes.origin.pull()
+        except GitCommandError as e:
+            logger.warning("git pull 失败，降级使用本地已有仓库: %s", e)
     else:
         repo = Repo.clone_from(repo_url, repo_path)
 

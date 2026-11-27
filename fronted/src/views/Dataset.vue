@@ -85,7 +85,9 @@
               <td>{{ d.repo_name || ('repo#' + d.repo_id) }}</td>
               <td><StatusTag :status="d.status" /></td>
               <td>{{ formatDateTime(d.updated_at) }}</td>
-              <td>
+              <td class="action-cell">
+                <button class="btn btn-link btn-view" :disabled="d.status !== 'success'" @click="openView(d)">查看</button>
+                <button class="btn btn-link btn-view" :disabled="d.status !== 'success'" @click="handleDownload(d)">下载</button>
                 <button class="btn btn-link" @click="removeDataset(d.task_id)">删除</button>
               </td>
             </tr>
@@ -97,6 +99,46 @@
         清洗前后摘要可在生成完成后查看任务消息；原始数据不变，处理版本按配置可重建。
       </InfoAlert>
     </template>
+
+    <div v-if="viewVisible" class="modal-mask" @click.self="closeView">
+      <div class="modal-box">
+        <div class="modal-header">
+          <span class="modal-title">数据集内容 · {{ viewDataset && (viewDataset.dataset_id || viewDataset.task_id.slice(0, 8)) }}</span>
+          <button class="modal-close" @click="closeView">×</button>
+        </div>
+        <div class="modal-body">
+          <LoadingState v-if="viewLoading" text="正在加载数据集内容..." />
+          <ErrorState v-else-if="viewError" :message="viewError" />
+          <template v-else>
+            <div class="modal-meta">
+              <StatCard label="样本总数" :value="viewRows.length" />
+              <StatCard label="来源仓库" :value="viewDataset && (viewDataset.repo_name || ('repo#' + viewDataset.repo_id))" />
+              <StatCard label="生成时间" :value="viewDataset && formatShortDateTime(viewDataset.updated_at)" />
+            </div>
+            <div class="modal-tip">说明：当前数据集内容来源于该仓库的提交记录（哈希、作者、时间、信息），可作为缺陷预测的原始样本。</div>
+            <div class="modal-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th>提交哈希</th><th>作者</th><th>时间</th><th>信息</th></tr>
+                </thead>
+                <tbody>
+                  <tr v-for="c in viewRows" :key="c.id || c.hash">
+                    <td class="mono">{{ (c.hash || '').slice(0, 8) }}</td>
+                    <td>{{ c.author || '-' }}</td>
+                    <td>{{ formatShortDateTime(c.date || c.committed_at) }}</td>
+                    <td class="msg-cell">{{ c.message || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="closeView">关闭</button>
+          <button class="btn btn-primary" :disabled="viewLoading || !viewRows.length" @click="handleDownload(viewDataset)">下载 CSV</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -124,6 +166,12 @@ const previewError = ref(null)
 const datasetName = ref('default_dataset')
 const generating = ref(false)
 const datasets = ref([])
+
+const viewVisible = ref(false)
+const viewLoading = ref(false)
+const viewError = ref(null)
+const viewDataset = ref(null)
+const viewRows = ref([])
 
 const { taskState, poll } = useTaskPolling()
 
@@ -214,6 +262,82 @@ async function handleGenerate() {
   }
 }
 
+async function fetchDatasetRows(d) {
+  if (!d || !d.repo_id) throw new Error('该数据集记录缺少来源仓库信息')
+  const data = await getRepoCommits(d.repo_id)
+  return data.commits || []
+}
+
+async function openView(d) {
+  viewVisible.value = true
+  viewDataset.value = d
+  viewLoading.value = true
+  viewError.value = null
+  viewRows.value = []
+  try {
+    viewRows.value = await fetchDatasetRows(d)
+  } catch (e) {
+    viewError.value = e.message || '加载数据集内容失败'
+  } finally {
+    viewLoading.value = false
+  }
+}
+
+function closeView() {
+  viewVisible.value = false
+  viewDataset.value = null
+  viewRows.value = []
+  viewError.value = null
+}
+
+function buildCsv(rows) {
+  const headers = ['hash', 'author', 'date', 'message']
+  const escape = (v) => {
+    const s = String(v == null ? '' : v)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const lines = [headers.join(',')]
+  for (const r of rows) {
+    lines.push([
+      escape(r.hash),
+      escape(r.author),
+      escape(r.date || r.committed_at),
+      escape(r.message)
+    ].join(','))
+  }
+  return lines.join('\n')
+}
+
+function triggerCsvDownload(filename, rows) {
+  const csv = buildCsv(rows)
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
+async function handleDownload(d) {
+  if (!d) return
+  try {
+    const rows = viewVisible.value && viewDataset.value && viewDataset.value.task_id === d.task_id
+      ? viewRows.value
+      : await fetchDatasetRows(d)
+    if (!rows.length) {
+      previewError.value = '该数据集暂无可下载的内容'
+      return
+    }
+    const name = (d.dataset_id || d.task_id.slice(0, 8)) + '.csv'
+    triggerCsvDownload(name, rows)
+  } catch (e) {
+    previewError.value = e.message || '下载数据集失败'
+  }
+}
+
 onMounted(() => {
   loadRepos()
   datasets.value = listDatasets()
@@ -239,7 +363,21 @@ onMounted(() => {
 .ml-8 { margin-left: 8px; }
 .table-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; }
 .btn-link { background: none; border: none; color: var(--color-error); cursor: pointer; font-size: 13px; }
+.action-cell { display: flex; gap: 12px; align-items: center; }
+.btn-view { color: var(--color-primary, #4c8dff); }
+.btn-view:disabled { color: var(--text-tertiary); cursor: not-allowed; opacity: 0.6; }
 .mt-16 { margin-top: 16px; }
 .mb-16 { margin-bottom: 16px; }
 .mb-8 { margin-bottom: 8px; }
+
+.modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-box { width: 820px; max-width: 92vw; max-height: 86vh; display: flex; flex-direction: column; background: var(--bg-card, #1e2330); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border-color); }
+.modal-title { font-size: 15px; color: var(--text-primary); font-weight: 600; }
+.modal-close { background: none; border: none; color: var(--text-secondary); font-size: 22px; cursor: pointer; line-height: 1; }
+.modal-body { padding: 16px 20px; overflow: auto; flex: 1; }
+.modal-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+.modal-tip { font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px; }
+.modal-table-wrap { max-height: 360px; overflow: auto; border: 1px solid var(--border-color); border-radius: 4px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 20px; border-top: 1px solid var(--border-color); }
 </style>

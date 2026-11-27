@@ -148,7 +148,14 @@ def clone_repo(request: RepoCloneRequest, db: Session = Depends(get_db)):
             "total_commits_saved": len(commits_data)
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"仓库拉取或保存失败: {str(e)}")
+        msg = str(e)
+        if "Could not connect to server" in msg or "Failed to connect" in msg or "unable to access" in msg:
+            detail = "无法连接远程仓库服务器，请检查网络或代理设置后重试"
+        elif "Repository not found" in msg or "does not exist" in msg:
+            detail = "仓库地址无效或不存在，请确认 URL 是否正确"
+        else:
+            detail = f"仓库拉取或保存失败: {msg}"
+        raise HTTPException(status_code=500, detail=detail)
 
 # 7. 查询某个仓库的所有提交记录
 @app.get("/repos/{repo_id}/commits")
@@ -212,7 +219,14 @@ def background_clone_and_save(repo_url: str, task_id: str):
             "repository_id": repo.id
         }
     except Exception as e:
-        task_status_db[task_id] = {"status": "failed", "message": f"仓库拉取失败: {str(e)}"}
+        msg = str(e)
+        if "Could not connect to server" in msg or "Failed to connect" in msg or "unable to access" in msg:
+            detail = "无法连接远程仓库服务器，请检查网络或代理设置后重试"
+        elif "Repository not found" in msg or "does not exist" in msg:
+            detail = "仓库地址无效或不存在，请确认 URL 是否正确"
+        else:
+            detail = f"仓库拉取失败: {msg}"
+        task_status_db[task_id] = {"status": "failed", "message": detail}
     finally:
         db.close()
 
@@ -268,14 +282,14 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
         "total_repos": total_repos,
         "total_projects": total_projects,
         "high_risk_commits": high_risk_commits,
-        "abnormal_commits": abnormal_commits,
+        "abnormal_comits": abnormal_commits,
         "recent_commits": recent_commits,
-        "risk_trend": [  # 供前端画趋势图的假数据，后续可替换为真实按周统计
+        "risk_trend": [  # 徛前端画趋势图的假数据，后续叿替换为真实按周统计
             {"date": "2023-11-06", "risk_count": 1},
             {"date": "2023-11-07", "risk_count": 0},
             {"date": "2023-11-08", "risk_count": 2},
             {"date": "2023-11-09", "risk_count": 5}
-        ]
+         ]
     }
 
 # ========== 预测结果接口 ==========
